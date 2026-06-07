@@ -7,6 +7,11 @@ from typing import Any
 import gradio as gr
 import pandas as pd
 
+from src.intervention_engine import (
+    InterventionRecommendation,
+    load_intervention_library,
+    recommend_interventions,
+)
 from src.risk_engine import RiskAssessment, assess_student_risk
 from src.root_cause import generate_root_causes
 
@@ -219,6 +224,75 @@ body,
     padding: 18px;
 }
 
+.intervention-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-height: 680px;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+.intervention-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--primary);
+    border-radius: 16px;
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.07);
+    padding: 18px;
+}
+
+.intervention-card h2 {
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0;
+    margin: 0 0 6px;
+}
+
+.intervention-category {
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+}
+
+.intervention-section-title {
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 800;
+    margin: 14px 0 6px;
+}
+
+.intervention-card ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.intervention-card li {
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 6px;
+}
+
+.intervention-meta {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.45;
+    margin-top: 12px;
+}
+
+.intervention-meta a {
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.intervention-meta a:hover {
+    text-decoration: underline;
+}
+
 button.primary-button {
     background: var(--primary) !important;
     border: 0 !important;
@@ -395,19 +469,7 @@ def render_analysis(student_display: str | None) -> str:
         </div>
         """
 
-    root_causes = generate_root_causes(
-        attendance_p1=float(student["attendance_p1"]),
-        attendance_p2=float(student["attendance_p2"]),
-        attendance_p3=float(student["attendance_p3"]),
-        grade_p1=float(student["grade_p1"]),
-        grade_p2=float(student["grade_p2"]),
-        grade_p3=float(student["grade_p3"]),
-        homework_p1=float(student["homework_p1"]),
-        homework_p2=float(student["homework_p2"]),
-        homework_p3=float(student["homework_p3"]),
-        behavior_notes=str(student.get("behavior_notes", "") or ""),
-        teacher_notes=str(student.get("teacher_notes", "") or ""),
-    )
+    root_causes = student_root_causes(student)
     root_cause_items = "".join(f"<li>{escape(item)}</li>" for item in root_causes)
 
     risk_items = "".join(
@@ -440,25 +502,125 @@ def render_analysis(student_display: str | None) -> str:
     """
 
 
+def student_root_causes(student: pd.Series) -> list[str]:
+    """Generate root-cause explanations for a selected student row."""
+    return generate_root_causes(
+        attendance_p1=float(student["attendance_p1"]),
+        attendance_p2=float(student["attendance_p2"]),
+        attendance_p3=float(student["attendance_p3"]),
+        grade_p1=float(student["grade_p1"]),
+        grade_p2=float(student["grade_p2"]),
+        grade_p3=float(student["grade_p3"]),
+        homework_p1=float(student["homework_p1"]),
+        homework_p2=float(student["homework_p2"]),
+        homework_p3=float(student["homework_p3"]),
+        behavior_notes=str(student.get("behavior_notes", "") or ""),
+        teacher_notes=str(student.get("teacher_notes", "") or ""),
+    )
+
+
 def render_intervention_placeholder() -> str:
-    """Render placeholder content for the future intervention workflow."""
+    """Render placeholder content before intervention retrieval."""
     return """
     <div class="placeholder-box">
-        Intervention generation coming next.
+        Click Generate Intervention Plan to retrieve evidence-based recommendations.
     </div>
     """
 
 
-def update_student_dropdown(risk_filter: str) -> tuple[Any, str]:
+def render_no_interventions() -> str:
+    """Render a friendly empty state when no recommendations are found."""
+    return """
+    <div class="placeholder-box">
+        No suitable interventions found.
+    </div>
+    """
+
+
+def render_intervention_error(message: str) -> str:
+    """Render a user-friendly intervention loading error."""
+    return f"""
+    <div class="placeholder-box">
+        Unable to load intervention recommendations. {escape(message)}
+    </div>
+    """
+
+
+def render_bullet_list(items: list[str]) -> str:
+    """Render a list of strings as HTML bullet points."""
+    if not items:
+        return "<ul><li>No details provided.</li></ul>"
+    return "<ul>" + "".join(f"<li>{escape(item)}</li>" for item in items) + "</ul>"
+
+
+def render_intervention_card(recommendation: InterventionRecommendation) -> str:
+    """Render one intervention recommendation as a dashboard card."""
+    reference_url = escape(recommendation.reference_url)
+    reference_link = (
+        f'<a href="{reference_url}" target="_blank" rel="noreferrer">{reference_url}</a>'
+        if reference_url
+        else "No reference URL provided."
+    )
+
+    return f"""
+    <div class="intervention-card">
+        <h2>{escape(recommendation.intervention_name)}</h2>
+        <div class="intervention-category">{escape(recommendation.category)}</div>
+
+        <div class="intervention-section-title">Summary</div>
+        {render_bullet_list(recommendation.summary)}
+
+        <div class="intervention-section-title">Expected Benefits</div>
+        {render_bullet_list(recommendation.expected_benefits)}
+
+        <div class="intervention-meta">
+            <strong>Evidence Level:</strong> {escape(recommendation.evidence_level or "Not specified")}<br>
+            <strong>Source:</strong> {escape(recommendation.source or "Not specified")}<br>
+            <strong>Reference URL:</strong> {reference_link}
+        </div>
+    </div>
+    """
+
+
+def generate_intervention_plan(student_display: str | None) -> str:
+    """Generate and render intervention recommendations for a selected student."""
+    student = get_student(student_display)
+    if student is None:
+        return render_intervention_error("Select a student first.")
+
+    try:
+        intervention_library = load_intervention_library()
+    except (FileNotFoundError, ValueError, OSError) as error:
+        return render_intervention_error(str(error))
+
+    root_causes = student_root_causes(student)
+    recommendations = recommend_interventions(
+        root_causes=root_causes,
+        intervention_library=intervention_library,
+        max_results=5,
+    )
+
+    if not recommendations:
+        return render_no_interventions()
+
+    cards = "".join(render_intervention_card(recommendation) for recommendation in recommendations)
+    return f'<div class="intervention-list">{cards}</div>'
+
+
+def update_student_dropdown(risk_filter: str) -> tuple[Any, str, str]:
     """Update student options when the risk category filter changes."""
     choices = student_choices(risk_filter)
     selected = choices[0] if choices else None
-    return gr.update(choices=choices, value=selected), render_analysis(selected)
+    return (
+        gr.update(choices=choices, value=selected),
+        render_analysis(selected),
+        render_intervention_placeholder(),
+    )
 
 
-def update_student_analysis(student_display: str | None) -> str:
+def update_student_analysis(student_display: str | None) -> tuple[str, str]:
     """Update the analysis panel when a student is selected."""
-    return render_analysis(student_display)
+    return render_analysis(student_display), render_intervention_placeholder()
 
 
 initial_choices = student_choices("All")
@@ -525,16 +687,16 @@ with gr.Blocks(
     risk_dropdown.change(
         fn=update_student_dropdown,
         inputs=risk_dropdown,
-        outputs=[student_dropdown, analysis_panel],
+        outputs=[student_dropdown, analysis_panel, intervention_panel],
     )
     student_dropdown.change(
         fn=update_student_analysis,
         inputs=student_dropdown,
-        outputs=analysis_panel,
+        outputs=[analysis_panel, intervention_panel],
     )
     generate_button.click(
-        fn=render_intervention_placeholder,
-        inputs=[],
+        fn=generate_intervention_plan,
+        inputs=student_dropdown,
         outputs=intervention_panel,
     )
 
