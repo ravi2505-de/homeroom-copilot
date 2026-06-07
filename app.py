@@ -573,6 +573,9 @@ def render_intervention_card(recommendation: InterventionRecommendation) -> str:
         <div class="intervention-section-title">Expected Benefits</div>
         {render_bullet_list(recommendation.expected_benefits)}
 
+        <div class="intervention-section-title">Why This Recommendation</div>
+        <div class="intervention-meta">{escape(recommendation.recommendation_reason)}</div>
+
         <div class="intervention-meta">
             <strong>Evidence Level:</strong> {escape(recommendation.evidence_level or "Not specified")}<br>
             <strong>Source:</strong> {escape(recommendation.source or "Not specified")}<br>
@@ -594,11 +597,19 @@ def generate_intervention_plan(student_display: str | None) -> str:
         return render_intervention_error(str(error))
 
     root_causes = student_root_causes(student)
+    risk_profile = {
+        "attendance_risk": str(student["attendance_risk"]),
+        "academic_risk": str(student["academic_risk"]),
+        "homework_risk": str(student["homework_risk"]),
+        "behavior_risk": str(student["behavior_risk"]),
+        "engagement_risk": str(student["engagement_risk"]),
+        "overall_risk": str(student["overall_risk"]),
+    }
     recommendations = recommend_interventions(
         root_causes=root_causes,
+        risk_profile=risk_profile,
         intervention_library=intervention_library,
         max_results=5,
-        overall_risk=str(student["overall_risk"]),
     )
 
     if not recommendations:

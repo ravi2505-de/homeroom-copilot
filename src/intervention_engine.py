@@ -24,6 +24,13 @@ KEYWORD_SCORE = 5
 SPECIAL_RULE_SCORE = 40
 MINIMUM_RELEVANCE_SCORE = 35
 
+RISK_WEIGHTS = {
+    "Low": 1,
+    "Moderate": 2,
+    "High": 3,
+    "Critical": 4,
+}
+
 RISK_RESULT_LIMITS = {
     "Low": 1,
     "Moderate": 2,
@@ -37,7 +44,7 @@ CATEGORY_TO_LIBRARY_VALUE = {
     "HOMEWORK": "homework",
     "BEHAVIOR": "behavior",
     "ENGAGEMENT": "engagement",
-    "FAMILY_SUPPORT": "attendance",
+    "FAMILY_SUPPORT": "family_support",
 }
 
 CATEGORY_TRIGGERS = {
@@ -169,17 +176,18 @@ class InterventionRecommendation:
     source: str
     reference_url: str
     relevance_score: int
+    recommendation_reason: str
 
 
 def monitoring_recommendation() -> InterventionRecommendation:
     """Return a monitoring recommendation for low-risk students."""
     return InterventionRecommendation(
-        intervention_name="Routine Monitoring",
+        intervention_name="Continue Monitoring",
         category="Monitoring",
         summary=[
-            "Continue routine monitoring.",
-            "Reinforce positive behaviors.",
-            "Maintain family communication.",
+            "Student is currently performing well.",
+            "Continue positive reinforcement.",
+            "Maintain routine communication.",
             "Reassess during the next reporting cycle.",
         ],
         expected_benefits=[
@@ -191,6 +199,10 @@ def monitoring_recommendation() -> InterventionRecommendation:
         source="Homeroom Copilot",
         reference_url="",
         relevance_score=0,
+        recommendation_reason=(
+            "Recommended because the student is currently low risk and does "
+            "not need a targeted intervention program."
+        ),
     )
 
 
@@ -240,9 +252,9 @@ def extract_risk_categories(root_causes: list[str]) -> set[str]:
 
 def recommend_interventions(
     root_causes: list[str],
+    risk_profile: dict[str, str],
     intervention_library: list[dict],
     max_results: int = 5,
-    overall_risk: str | None = None,
 ) -> list[InterventionRecommendation]:
     """Recommend high-precision interventions for a student risk profile.
 
@@ -253,7 +265,7 @@ def recommend_interventions(
     if max_results <= 0:
         return []
 
-    normalized_risk = _normalize_overall_risk(overall_risk)
+    normalized_risk = _normalize_overall_risk(risk_profile.get("overall_risk"))
     if normalized_risk == "Low":
         return [monitoring_recommendation()]
 
@@ -271,12 +283,19 @@ def recommend_interventions(
         if intervention_id in seen_ids:
             continue
 
-        score = _score_intervention(intervention, categories, root_causes)
+        score, matched_areas = _score_intervention(
+            intervention=intervention,
+            categories=categories,
+            risk_profile=risk_profile,
+            root_causes=root_causes,
+        )
         if score < MINIMUM_RELEVANCE_SCORE:
             continue
 
         seen_ids.add(intervention_id)
-        scored_recommendations.append(_to_recommendation(intervention, score))
+        scored_recommendations.append(
+            _to_recommendation(intervention, score, matched_areas)
+        )
 
     scored_recommendations.sort(
         key=lambda recommendation: recommendation.relevance_score,
@@ -288,95 +307,62 @@ def recommend_interventions(
 def _score_intervention(
     intervention: dict,
     categories: set[str],
+    risk_profile: dict[str, str],
     root_causes: list[str],
-) -> int:
+) -> tuple[int, set[str]]:
     """Calculate a structured, precision-oriented relevance score."""
-    risk_categories = _lower_set(intervention.get("risk_categories", []))
+    primary_targets = _lower_set(intervention.get("primary_targets", []))
+    secondary_targets = _lower_set(intervention.get("secondary_targets", []))
+    mitigates = _lower_set(intervention.get("mitigates", []))
     when_to_use = _lower_list(intervention.get("when_to_use", []))
     keywords = _lower_list(intervention.get("keywords", []))
-    intervention_name = str(intervention.get("intervention_name", "")).lower()
 
     score = 0
     supporting_signal_score = 0
+    matched_areas: set[str] = set()
 
     for category in categories:
-        library_category = CATEGORY_TO_LIBRARY_VALUE[category]
-        if library_category in risk_categories:
-            score += RISK_CATEGORY_SCORE
+        risk_area = CATEGORY_TO_LIBRARY_VALUE[category]
+        risk_weight = _risk_weight_for_area(risk_area, risk_profile)
+
+        if risk_area in primary_targets:
+            score += 100 * risk_weight
+            supporting_signal_score += 100 * risk_weight
+            matched_areas.add(risk_area)
+
+        if risk_area in secondary_targets:
+            score += 50 * risk_weight
+            supporting_signal_score += 50 * risk_weight
+            matched_areas.add(risk_area)
+
+        if risk_area in mitigates:
+            score += 25 * risk_weight
+            supporting_signal_score += 25 * risk_weight
+            matched_areas.add(risk_area)
 
         for term in CATEGORY_WHEN_TO_USE_TERMS[category]:
             if _contains_match(term, when_to_use):
-                score += WHEN_TO_USE_SCORE
-                supporting_signal_score += WHEN_TO_USE_SCORE
+                score += 20
+                supporting_signal_score += 20
 
         for term in CATEGORY_KEYWORD_TERMS[category]:
             if _contains_match(term, keywords):
                 score += KEYWORD_SCORE
                 supporting_signal_score += KEYWORD_SCORE
 
-    boost = _special_rule_boost(
-        intervention_name=intervention_name,
-        risk_categories=risk_categories,
-        keywords=keywords,
-        categories=categories,
-        root_causes=root_causes,
-    )
-    score += boost
-    supporting_signal_score += boost
-
     if supporting_signal_score <= 0:
-        return 0
+        return 0, set()
 
-    return score
-
-
-def _special_rule_boost(
-    intervention_name: str,
-    risk_categories: set[str],
-    keywords: list[str],
-    categories: set[str],
-    root_causes: list[str],
-) -> int:
-    """Apply explicit precision boosts for teacher-facing intervention rules."""
-    boost = 0
-    keyword_text = " ".join(keywords)
-
-    if _has_teacher_observations(root_causes):
-        if "family engagement" in intervention_name or "family engagement" in keyword_text:
-            boost += SPECIAL_RULE_SCORE
-        if "engagement" in risk_categories or "active learning" in intervention_name:
-            boost += SPECIAL_RULE_SCORE
-
-    if "BEHAVIOR" in categories:
-        if "behavior" in risk_categories or "behavioral support" in keyword_text:
-            boost += SPECIAL_RULE_SCORE
-        if "mentoring" in intervention_name or "mentoring" in keyword_text:
-            boost += SPECIAL_RULE_SCORE
-        if "counseling" in intervention_name or "counseling" in keyword_text:
-            boost += SPECIAL_RULE_SCORE
-
-    if "ATTENDANCE" in categories:
-        if "attendance improvement" in intervention_name:
-            boost += SPECIAL_RULE_SCORE
-        if "family engagement" in intervention_name or "family engagement" in keyword_text:
-            boost += SPECIAL_RULE_SCORE
-
-    if "HOMEWORK" in categories:
-        if "homework support" in intervention_name or "homework support" in keyword_text:
-            boost += SPECIAL_RULE_SCORE
-        if "tutoring" in intervention_name or "tutoring" in keyword_text:
-            boost += SPECIAL_RULE_SCORE
-        if "study skills" in intervention_name or "study skills" in keyword_text:
-            boost += SPECIAL_RULE_SCORE
-
-    return boost
+    return score, matched_areas
 
 
 def _to_recommendation(
     intervention: dict,
     relevance_score: int,
+    matched_areas: set[str],
 ) -> InterventionRecommendation:
     """Convert an intervention dictionary to a ranked recommendation."""
+    reason_template = str(intervention.get("recommendation_reason_template") or "")
     return InterventionRecommendation(
         intervention_name=str(
             intervention.get("intervention_name") or "Unnamed Intervention"
@@ -388,6 +374,10 @@ def _to_recommendation(
         source=str(intervention.get("source") or ""),
         reference_url=str(intervention.get("reference_url") or ""),
         relevance_score=relevance_score,
+        recommendation_reason=_recommendation_reason(
+            reason_template,
+            matched_areas,
+        ),
     )
 
 
@@ -441,6 +431,68 @@ def _has_teacher_observations(root_causes: list[str]) -> bool:
         root_cause.lower().startswith("teacher observations:")
         for root_cause in root_causes
     )
+
+
+def _risk_weight_for_area(risk_area: str, risk_profile: dict[str, str]) -> int:
+    """Return the student's risk weight for a target risk area."""
+    field_name = {
+        "attendance": "attendance_risk",
+        "academic": "academic_risk",
+        "homework": "homework_risk",
+        "behavior": "behavior_risk",
+        "engagement": "engagement_risk",
+        "family_support": "overall_risk",
+    }.get(risk_area, "overall_risk")
+
+    risk_level = _normalize_overall_risk(risk_profile.get(field_name))
+    if risk_level is None:
+        risk_level = _normalize_overall_risk(risk_profile.get("overall_risk"))
+    return RISK_WEIGHTS.get(risk_level or "Low", 1)
+
+
+def _recommendation_reason(
+    reason_template: str,
+    matched_areas: set[str],
+) -> str:
+    """Build an explanation from template text and matched risk areas."""
+    matched_text = _format_matched_areas(matched_areas)
+    if reason_template and matched_text:
+        return f"{reason_template} Matched risk areas: {matched_text}."
+    if reason_template:
+        return reason_template
+    if matched_text:
+        return f"Recommended because {matched_text} were identified as concerns."
+    return "Recommended based on the student's current risk profile."
+
+
+def _format_matched_areas(matched_areas: set[str]) -> str:
+    """Format matched risk areas for display in a recommendation reason."""
+    labels = {
+        "attendance": "attendance",
+        "academic": "academic performance",
+        "homework": "homework completion",
+        "behavior": "behavior",
+        "engagement": "engagement",
+        "family_support": "family support",
+    }
+    ordered = [
+        labels[area]
+        for area in (
+            "attendance",
+            "academic",
+            "homework",
+            "behavior",
+            "engagement",
+            "family_support",
+        )
+        if area in matched_areas
+    ]
+
+    if not ordered:
+        return ""
+    if len(ordered) == 1:
+        return ordered[0]
+    return ", ".join(ordered[:-1]) + f" and {ordered[-1]}"
 
 
 def _string_list(value: Any) -> list[str]:
