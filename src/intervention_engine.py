@@ -24,6 +24,13 @@ KEYWORD_SCORE = 5
 SPECIAL_RULE_SCORE = 40
 MINIMUM_RELEVANCE_SCORE = 35
 
+RISK_RESULT_LIMITS = {
+    "Low": 1,
+    "Moderate": 2,
+    "High": 3,
+    "Critical": 5,
+}
+
 CATEGORY_TO_LIBRARY_VALUE = {
     "ATTENDANCE": "attendance",
     "ACADEMIC": "academic",
@@ -164,6 +171,29 @@ class InterventionRecommendation:
     relevance_score: int
 
 
+def monitoring_recommendation() -> InterventionRecommendation:
+    """Return a monitoring recommendation for low-risk students."""
+    return InterventionRecommendation(
+        intervention_name="Routine Monitoring",
+        category="Monitoring",
+        summary=[
+            "Continue routine monitoring.",
+            "Reinforce positive behaviors.",
+            "Maintain family communication.",
+            "Reassess during the next reporting cycle.",
+        ],
+        expected_benefits=[
+            "Sustains current progress without unnecessary intervention fatigue.",
+            "Keeps teachers and families aligned on continued student success.",
+            "Supports early detection if the student's risk profile changes.",
+        ],
+        evidence_level="school practice",
+        source="Homeroom Copilot",
+        reference_url="",
+        relevance_score=0,
+    )
+
+
 def load_intervention_library(path: Path | None = None) -> list[dict[str, Any]]:
     """Load the curated intervention library from JSON.
 
@@ -194,6 +224,8 @@ def extract_risk_categories(root_causes: list[str]) -> set[str]:
 
     for root_cause in root_causes:
         text = root_cause.lower()
+        if not _is_actionable_root_cause(text):
+            continue
 
         if text.startswith("teacher observations:"):
             categories.add("ENGAGEMENT")
@@ -210,6 +242,7 @@ def recommend_interventions(
     root_causes: list[str],
     intervention_library: list[dict],
     max_results: int = 5,
+    overall_risk: str | None = None,
 ) -> list[InterventionRecommendation]:
     """Recommend high-precision interventions for a student risk profile.
 
@@ -220,9 +253,15 @@ def recommend_interventions(
     if max_results <= 0:
         return []
 
+    normalized_risk = _normalize_overall_risk(overall_risk)
+    if normalized_risk == "Low":
+        return [monitoring_recommendation()]
+
     categories = extract_risk_categories(root_causes)
     if not categories:
         return []
+
+    result_limit = _result_limit(normalized_risk, max_results)
 
     scored_recommendations: list[InterventionRecommendation] = []
     seen_ids: set[str] = set()
@@ -243,7 +282,7 @@ def recommend_interventions(
         key=lambda recommendation: recommendation.relevance_score,
         reverse=True,
     )
-    return scored_recommendations[:max_results]
+    return scored_recommendations[:result_limit]
 
 
 def _score_intervention(
@@ -356,6 +395,44 @@ def _contains_match(term: str, values: list[str]) -> bool:
     """Return whether a structured field contains the term."""
     normalized_term = term.lower()
     return any(normalized_term in value for value in values)
+
+
+def _is_actionable_root_cause(text: str) -> bool:
+    """Return whether a root cause should trigger intervention matching."""
+    if "remained relatively stable" in text:
+        return False
+
+    actionable_terms = (
+        "declined",
+        "decline",
+        "significantly",
+        "behavior concerns:",
+        "teacher observations:",
+        "concern",
+        "disruption",
+        "conflict",
+        "missing",
+        "low ",
+    )
+    return any(term in text for term in actionable_terms)
+
+
+def _normalize_overall_risk(overall_risk: str | None) -> str | None:
+    """Normalize an optional overall risk label."""
+    if overall_risk is None:
+        return None
+
+    normalized = overall_risk.replace(" Risk", "").strip().title()
+    if normalized in RISK_RESULT_LIMITS:
+        return normalized
+    return None
+
+
+def _result_limit(overall_risk: str | None, max_results: int) -> int:
+    """Return the maximum number of intervention programs for a risk level."""
+    if overall_risk is None:
+        return max_results
+    return min(max_results, RISK_RESULT_LIMITS[overall_risk])
 
 
 def _has_teacher_observations(root_causes: list[str]) -> bool:

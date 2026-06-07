@@ -598,6 +598,7 @@ def generate_intervention_plan(student_display: str | None) -> str:
         root_causes=root_causes,
         intervention_library=intervention_library,
         max_results=5,
+        overall_risk=str(student["overall_risk"]),
     )
 
     if not recommendations:
