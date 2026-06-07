@@ -1,0 +1,31 @@
+student_id,student_name,gender,grade_level,homeroom,attendance_p1,attendance_p2,attendance_p3,grade_p1,grade_p2,grade_p3,homework_p1,homework_p2,homework_p3,behavior_incident_count,behavior_notes,teacher_notes
+S001,Sarah Johnson,F,7.0,7A,96.0,92.0,78.0,82.0,74.0,64.0,88.0,72.0,42.0,3.0,Repeated classroom disruptions and conflict with peers.,Participation has declined significantly.
+S002,John Smith,M,7.0,7A,94.0,90.0,84.0,79.0,75.0,72.0,85.0,76.0,68.0,2.0,Frequent classroom interruptions.,Needs reminders to stay on task.
+S003,Emma Brown,F,7.0,7A,93.0,91.0,88.0,81.0,79.0,76.0,83.0,78.0,71.0,1.0,Occasional off-task behavior.,Quiet but cooperative.
+S004,Michael Davis,M,7.0,7A,90.0,86.0,82.0,75.0,72.0,69.0,76.0,70.0,63.0,3.0,Disruptive behavior during instruction.,Shows inconsistent effort.
+S005,Alex Wilson,M,7.0,7A,92.0,91.0,89.0,80.0,77.0,74.0,84.0,78.0,72.0,2.0,Excessive talking during lessons.,Needs organizational support.
+S006,Olivia Moore,F,7.0,7A,97.0,97.0,96.0,92.0,91.0,90.0,95.0,94.0,93.0,0.0,No incidents.,Strong classroom participation.
+S007,Noah Taylor,M,7.0,7A,96.0,95.0,95.0,89.0,88.0,88.0,92.0,91.0,90.0,0.0,No incidents.,Consistent performer.
+S008,Ava Martinez,F,7.0,7A,98.0,98.0,97.0,94.0,94.0,93.0,96.0,95.0,95.0,0.0,No incidents.,Highly engaged learner.
+S009,William Anderson,M,7.0,7A,95.0,95.0,94.0,87.0,88.0,87.0,90.0,90.0,89.0,0.0,No incidents.,Works independently.
+S010,Sophia Thomas,F,7.0,7A,97.0,96.0,95.0,91.0,90.0,90.0,94.0,93.0,92.0,0.0,No incidents.,Positive classroom influence.
+S011,James Jackson,M,7.0,7A,96.0,96.0,95.0,88.0,87.0,86.0,91.0,90.0,90.0,0.0,No incidents.,Reliable student.
+S012,Isabella White,F,7.0,7A,98.0,97.0,97.0,93.0,92.0,92.0,96.0,95.0,94.0,0.0,No incidents.,Strong academic habits.
+S013,Benjamin Harris,M,7.0,7A,95.0,95.0,95.0,86.0,86.0,85.0,89.0,89.0,88.0,0.0,No incidents.,Participates appropriately.
+S014,Mia Martin,F,7.0,7A,97.0,97.0,96.0,90.0,89.0,89.0,93.0,92.0,92.0,0.0,No incidents.,Shows leadership qualities.
+S015,Lucas Thompson,M,7.0,7A,96.0,96.0,95.0,88.0,88.0,87.0,91.0,90.0,89.0,0.0,No incidents.,Good peer relationships.
+S016,Charlotte Garcia,F,7.0,7A,98.0,98.0,98.0,95.0,95.0,94.0,97.0,96.0,96.0,0.0,No incidents.,Excellent classroom engagement.
+S017,Henry Martinez,M,7.0,7A,95.0,94.0,94.0,87.0,86.0,86.0,89.0,89.0,88.0,0.0,No incidents.,Steady progress.
+S018,Evelyn Robinson,F,7.0,7A,97.0,96.0,96.0,92.0,91.0,91.0,94.0,94.0,93.0,0.0,No incidents.,Consistent attendance.
+S019,Daniel Clark,M,7.0,7A,95.0,92.0,91.0,83.0,80.0,79.0,86.0,82.0,80.0,1.0,Late to class multiple times.,Needs occasional support.
+S020,Harper Rodriguez,F,7.0,7A,94.0,92.0,90.0,82.0,79.0,77.0,84.0,80.0,78.0,1.0,Minor classroom disruption.,Engagement decreasing slightly.
+S021,Matthew Lewis,M,7.0,7A,93.0,90.0,89.0,80.0,78.0,76.0,82.0,79.0,76.0,2.0,Conflict during group activity.,Requires monitoring.
+S022,Abigail Lee,F,7.0,7A,92.0,91.0,90.0,81.0,80.0,78.0,83.0,82.0,79.0,1.0,Off-task behavior.,Participation varies.
+S023,David Walker,M,7.0,7A,91.0,90.0,88.0,79.0,77.0,75.0,80.0,78.0,75.0,2.0,Classroom interruptions.,Needs additional encouragement.
+S024,Emily Hall,F,7.0,7A,93.0,92.0,91.0,84.0,82.0,80.0,86.0,84.0,82.0,1.0,No major concerns.,Shows moderate engagement.
+S025,Joseph Allen,M,7.0,7A,92.0,91.0,90.0,82.0,80.0,78.0,84.0,82.0,80.0,1.0,Occasional distraction.,Capable but inconsistent.
+S026,Grace Young,F,7.0,7A,90.0,89.0,88.0,78.0,76.0,74.0,80.0,77.0,74.0,2.0,Peer conflict reported.,Needs closer monitoring.
+S027,Samuel King,M,7.0,7A,89.0,87.0,84.0,74.0,72.0,70.0,76.0,72.0,68.0,3.0,Multiple classroom disruptions.,Academic performance declining.
+S028,Chloe Wright,F,7.0,7A,88.0,85.0,82.0,73.0,70.0,68.0,74.0,70.0,66.0,4.0,Repeated behavioral referrals.,Attendance and grades declining.
+S029,Andrew Scott,M,7.0,7A,86.0,83.0,80.0,72.0,69.0,66.0,72.0,68.0,64.0,4.0,Conflict with classmates.,Needs intervention support.
+S030,Lily Green,F,7.0,7A,84.0,80.0,76.0,68.0,64.0,58.0,70.0,60.0,45.0,6.0,Multiple disciplinary incidents and physical altercation.,High-risk student requiring immediate intervention.
