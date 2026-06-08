@@ -2,8 +2,8 @@ __pycache__/
 *.pyc
 *.pyo
 
-gradio.out.log
-gradio.err.log
-
+# Gradio runtime logs
+gradio*.out.log
+gradio*.err.log
 .venv/
 venv/
