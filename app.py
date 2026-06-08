@@ -16,7 +16,7 @@ from src.risk_engine import RiskAssessment, assess_student_risk
 from src.root_cause import generate_root_causes
 
 APP_TITLE = "Homeroom Copilot"
-APP_SUBTITLE = "AI-Powered Early Warning and Intervention Support System"
+APP_SUBTITLE = "AI-Powered Student Intervention Assistant"
 
 DATA_CSV_PATH = Path("data/students.csv")
 DATA_XLSX_FALLBACK_PATH = Path("data/student_data.csv.xlsx")
@@ -46,6 +46,8 @@ RISK_LABELS = {
 CSS = """
 :root {
     --primary: #2563EB;
+    --primary-dark: #1D4ED8;
+    --primary-soft: #EFF6FF;
     --success: #22C55E;
     --warning: #F59E0B;
     --high: #F97316;
@@ -54,60 +56,230 @@ CSS = """
     --card: #FFFFFF;
     --text: #1E293B;
     --muted: #64748B;
-    --border: #E2E8F0;
+    --border: #DDE7F1;
+    --shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+    --shadow-soft: 0 4px 18px rgba(15, 23, 42, 0.055);
 }
 
 body,
 .gradio-container {
-    background: var(--background) !important;
+    background: linear-gradient(180deg, #F8FBFF 0%, #F3F7FC 100%) !important;
     color: var(--text) !important;
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
 }
 
+body::before {
+    background: radial-gradient(
+        circle,
+        rgba(59, 130, 246, 0.10) 0%,
+        rgba(59, 130, 246, 0.04) 35%,
+        rgba(59, 130, 246, 0.00) 70%
+    );
+    border-radius: 50%;
+    content: "";
+    height: 500px;
+    left: 50%;
+    pointer-events: none;
+    position: fixed;
+    top: -250px;
+    transform: translateX(-50%);
+    width: 900px;
+    z-index: 0;
+}
+
 .gradio-container {
-    max-width: 1280px !important;
+    max-width: 1400px !important;
     margin: 0 auto !important;
     padding: 28px !important;
+    position: relative;
+    z-index: 1;
 }
 
 .dashboard-header {
+    align-items: center;
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
     margin-bottom: 24px;
+    padding: 4px 0 2px;
 }
 
-.dashboard-title {
+.section-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+}
+
+.dashboard-title,
+.brand-title {
     margin: 0;
     color: var(--text);
-    font-size: 36px;
-    font-weight: 800;
-    letter-spacing: 0;
+    font-size: 34px;
+    font-weight: 850;
+    letter-spacing: -0.01em;
+    line-height: 1.08;
 }
 
-.dashboard-subtitle {
+.dashboard-subtitle,
+.brand-subtitle {
     margin: 8px 0 0;
     color: var(--muted);
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 550;
+    letter-spacing: 0;
+}
+
+.teacher-profile {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    min-width: 300px;
+    text-align: right;
+}
+
+.teacher-avatar {
+    align-items: center;
+    background: var(--primary-soft);
+    border-radius: 999px;
+    color: var(--primary);
+    display: flex;
+    flex: 0 0 auto;
+    font-size: 22px;
+    height: 44px;
+    justify-content: center;
+    width: 44px;
+}
+
+.teacher-name {
+    color: var(--text);
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.teacher-school,
+.teacher-role {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.demo-badge {
+    background: #DBEAFE;
+    border: 1px solid #BFDBFE;
+    border-radius: 999px;
+    color: var(--primary-dark);
+    display: inline-flex;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 18px;
+    padding: 7px 12px;
+    text-transform: uppercase;
+}
+
+.status-bar {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: -4px 0 20px;
+}
+
+.status-pill {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(203, 213, 225, 0.82);
+    border-radius: 999px;
+    color: #334155;
+    display: flex;
+    font-size: 14px;
+    font-weight: 650;
+    gap: 8px;
+    padding: 8px 12px;
+}
+
+.status-check {
+    align-items: center;
+    background: rgba(220, 252, 231, 0.92);
+    border-radius: 999px;
+    color: #15803D;
+    display: inline-flex;
+    font-size: 12px;
+    font-weight: 900;
+    height: 20px;
+    justify-content: center;
+    width: 20px;
+}
+
+.controls-shell {
+    margin-bottom: 4px;
+}
+
+.controls-shell > .block {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+.controls-row {
+    align-items: end;
+    gap: 18px !important;
+}
+
+.controls-row > .form {
+    display: grid !important;
+    gap: 18px !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100% !important;
+}
+
+.controls-row > .form > div,
+.controls-row > div {
+    min-width: 0 !important;
+    width: 100% !important;
+}
+
+.controls-row .block,
+.controls-row .form,
+.controls-row .input-container {
+    min-height: 48px !important;
+    width: 100% !important;
+}
+
+.advanced-note {
+    background: rgba(248, 250, 252, 0.82);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.55;
+    padding: 14px;
 }
 
 .kpi-grid {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 16px;
-    margin-bottom: 22px;
+    gap: 14px;
+    margin-bottom: 16px;
 }
 
 .kpi-card {
-    background: var(--card);
-    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(221, 231, 241, 0.96);
     border-left: 5px solid var(--primary);
     border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+    box-shadow: var(--shadow-soft);
+    min-height: 120px;
     padding: 18px;
-    transition: transform 160ms ease, box-shadow 160ms ease;
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
 
 .kpi-card:hover {
-    box-shadow: 0 16px 38px rgba(15, 23, 42, 0.11);
+    border-color: rgba(203, 213, 225, 0.95);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.075);
     transform: translateY(-2px);
 }
 
@@ -134,15 +306,11 @@ body,
 }
 
 .section-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    box-shadow: 0 12px 34px rgba(15, 23, 42, 0.07);
-    padding: 22px;
+    padding: 24px;
 }
 
 .filter-card {
-    margin-bottom: 22px;
+    margin-bottom: 20px;
 }
 
 .panel-title {
@@ -150,6 +318,15 @@ body,
     font-size: 20px;
     font-weight: 800;
     margin: 0 0 16px;
+}
+
+.section-eyebrow {
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
 }
 
 .student-name {
@@ -167,16 +344,17 @@ body,
 
 .risk-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 12px;
-    margin: 18px 0;
+    margin: 12px 0 18px;
 }
 
 .risk-item {
-    background: #F8FAFC;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 14px;
+    background: transparent;
+    border: 0;
+    border-left: 3px solid var(--border);
+    border-radius: 0;
+    padding: 6px 0 6px 12px;
 }
 
 .risk-label {
@@ -197,6 +375,17 @@ body,
     margin-top: 7px;
 }
 
+.risk-chip {
+    align-items: center;
+    border-radius: 999px;
+    color: #FFFFFF;
+    display: inline-flex;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1;
+    padding: 7px 10px;
+}
+
 .risk-dot {
     border-radius: 999px;
     display: inline-block;
@@ -209,10 +398,36 @@ body,
     padding-left: 20px;
 }
 
+.root-cause-scroll {
+    box-sizing: border-box;
+    height: 180px;
+    min-height: 180px;
+    max-height: 180px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
 .root-list li {
     color: var(--text);
     line-height: 1.55;
     margin-bottom: 8px;
+}
+
+.analysis-subsection {
+    border-top: 1px solid var(--border);
+    margin-top: 18px;
+    padding-top: 18px;
+}
+
+.trend-strip {
+    background: transparent;
+    border: 0;
+    border-left: 3px solid var(--primary);
+    border-radius: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 4px 0 4px 14px;
 }
 
 .placeholder-box {
@@ -221,24 +436,100 @@ body,
     border-radius: 16px;
     color: #1D4ED8;
     font-weight: 700;
-    padding: 18px;
+    line-height: 1.45;
+    padding: 16px 18px;
+}
+
+.placeholder-title {
+    color: #1E40AF;
+    font-size: 15px;
+    font-weight: 850;
+    margin-bottom: 4px;
+}
+
+.placeholder-copy {
+    color: #2563EB;
+    font-size: 14px;
+    font-weight: 650;
 }
 
 .intervention-list {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    max-height: 680px;
+    max-height: none;
+    overflow: visible;
+    padding-right: 6px;
+}
+
+.recommendations-container {
+    box-sizing: border-box;
+    height: 550px;
+    max-height: 550px;
     overflow-y: auto;
     padding-right: 6px;
 }
 
+.balanced-panel {
+    height: 840px !important;
+    min-height: 840px !important;
+    overflow: hidden !important;
+}
+
+.balanced-panel > .html-container {
+    height: 100% !important;
+    min-height: 0 !important;
+}
+
+.balanced-panel .section-card {
+    display: flex;
+    flex-direction: column;
+    box-shadow: none;
+    height: 100%;
+    overflow: hidden;
+}
+
+.analysis-body,
+.intervention-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.analysis-main-scroll {
+    flex: 0 0 auto;
+    min-height: auto;
+    overflow: visible;
+    padding-right: 0;
+}
+
+.intervention-output-wrap {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.intervention-output-wrap > .html-container,
+.intervention-output-wrap > .block,
+.intervention-output-wrap > div {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.intervention-output-wrap .placeholder-box {
+    margin-top: 0;
+}
+
 .intervention-card {
-    background: #FFFFFF;
-    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(221, 231, 241, 0.96);
     border-left: 5px solid var(--primary);
     border-radius: 16px;
-    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.07);
+    box-shadow: var(--shadow-soft);
     padding: 18px;
 }
 
@@ -297,14 +588,32 @@ button.primary-button {
     background: var(--primary) !important;
     border: 0 !important;
     border-radius: 14px !important;
-    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.22) !important;
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2) !important;
     color: #FFFFFF !important;
+    flex: 0 0 56px !important;
     font-weight: 800 !important;
-    min-height: 48px !important;
+    height: 56px !important;
+    max-width: 320px !important;
+    min-height: 56px !important;
+    margin: 0 auto 18px !important;
+    transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease !important;
+    width: 100% !important;
+}
+
+.primary-button {
+    max-width: 320px !important;
+    margin: 0 auto 18px !important;
+}
+
+.primary-button button {
+    height: 56px !important;
+    min-height: 56px !important;
 }
 
 button.primary-button:hover {
-    filter: brightness(0.97);
+    background: var(--primary-dark) !important;
+    box-shadow: 0 10px 22px rgba(37, 99, 235, 0.24) !important;
+    filter: none;
     transform: translateY(-1px);
 }
 
@@ -321,13 +630,33 @@ label,
     font-weight: 800 !important;
 }
 
+details {
+    border-radius: 16px !important;
+}
+
 @media (max-width: 980px) {
+    .dashboard-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .teacher-profile {
+        justify-content: flex-start;
+        min-width: 0;
+        text-align: left;
+    }
+
     .kpi-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .controls-row {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+    }
+
     .risk-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -340,7 +669,16 @@ label,
         font-size: 30px;
     }
 
+    .brand-card,
+    .section-card {
+        border-radius: 16px;
+    }
+
     .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .risk-grid {
         grid-template-columns: 1fr;
     }
 }
@@ -385,6 +723,39 @@ def enrich_students(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 
 STUDENTS = load_students()
+
+
+def render_top_header() -> str:
+    """Render the public-demo product header."""
+    return f"""
+    <div class="dashboard-header">
+        <div>
+            <h1 class="brand-title">{APP_TITLE}</h1>
+            <p class="brand-subtitle">{APP_SUBTITLE}</p>
+        </div>
+        <div class="teacher-profile">
+            <div>
+                <div class="teacher-name">👤 Sarah Johnson</div>
+                <div class="teacher-school">Lincoln Middle School</div>
+                <div class="teacher-role">Grade 7 Homeroom Teacher</div>
+            </div>
+        </div>
+    </div>
+    """
+
+
+def render_status_bar() -> str:
+    """Render slim dataset and engine status pills."""
+    student_count = len(STUDENTS)
+    return f"""
+    <div class="status-bar">
+        <div class="demo-badge">Demo Mode</div>
+        <div class="status-pill"><span class="status-check">✓</span>Demo Dataset Active</div>
+        <div class="status-pill"><span class="status-check">✓</span>{student_count} Students Loaded</div>
+        <div class="status-pill"><span class="status-check">✓</span>Risk Engine Ready</div>
+        <div class="status-pill"><span class="status-check">✓</span>Intervention Library Ready</div>
+    </div>
+    """
 
 
 def risk_filter_to_value(risk_filter: str) -> str | None:
@@ -451,8 +822,7 @@ def render_risk_item(label: str, risk_value: str) -> str:
     <div class="risk-item">
         <div class="risk-label">{escape(label)}</div>
         <div class="risk-value">
-            <span class="risk-dot" style="background:{color};"></span>
-            {escape(display)}
+            <span class="risk-chip" style="background:{color};">{escape(display)}</span>
         </div>
     </div>
     """
@@ -464,13 +834,17 @@ def render_analysis(student_display: str | None) -> str:
     if student is None:
         return """
         <div class="section-card">
+            <div class="section-eyebrow">Risk Assessment</div>
             <h2 class="panel-title">Student Analysis</h2>
-            <p class="student-meta">Select a student to view their risk profile.</p>
+            <div class="analysis-body">
+                <p class="student-meta">Select a student to view their risk profile.</p>
+            </div>
         </div>
         """
 
     root_causes = student_root_causes(student)
     root_cause_items = "".join(f"<li>{escape(item)}</li>" for item in root_causes)
+    trend_summary = " ".join(escape(item) for item in root_causes[:3])
 
     risk_items = "".join(
         [
@@ -490,14 +864,33 @@ def render_analysis(student_display: str | None) -> str:
 
     return f"""
     <div class="section-card">
+        <div class="section-eyebrow">Risk Assessment</div>
         <h2 class="panel-title">Student Analysis</h2>
         <h3 class="student-name">{escape(str(student["student_name"]))}</h3>
         <div class="student-meta">
             Grade {escape(str(int(student["grade_level"])))} · Homeroom {escape(str(student["homeroom"]))}
         </div>
-        <div class="risk-grid">{risk_items}</div>
-        <h3 class="panel-title">Root Causes</h3>
-        <ul class="root-list">{root_cause_items}</ul>
+
+        <div class="analysis-body">
+            <div class="analysis-main-scroll">
+                <div class="analysis-subsection">
+                    <h3 class="panel-title">Risk Profile</h3>
+                    <div class="risk-grid">{risk_items}</div>
+                </div>
+
+                <div class="analysis-subsection">
+                    <h3 class="panel-title">Trend Analysis</h3>
+                    <div class="trend-strip">{trend_summary}</div>
+                </div>
+
+                <div class="analysis-subsection">
+                    <h3 class="panel-title">Root Causes</h3>
+                    <div class="root-cause-scroll">
+                        <ul class="root-list">{root_cause_items}</ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     """
 
@@ -522,8 +915,11 @@ def student_root_causes(student: pd.Series) -> list[str]:
 def render_intervention_placeholder() -> str:
     """Render placeholder content before intervention retrieval."""
     return """
-    <div class="placeholder-box">
-        Click Generate Intervention Plan to retrieve evidence-based recommendations.
+    <div class="recommendations-container">
+        <div class="placeholder-box">
+            <div class="placeholder-title">No recommendations generated yet.</div>
+            <div class="placeholder-copy">Click Generate Intervention Plan.</div>
+        </div>
     </div>
     """
 
@@ -531,8 +927,10 @@ def render_intervention_placeholder() -> str:
 def render_no_interventions() -> str:
     """Render a friendly empty state when no recommendations are found."""
     return """
-    <div class="placeholder-box">
-        No suitable interventions found.
+    <div class="recommendations-container">
+        <div class="placeholder-box">
+            No suitable interventions found.
+        </div>
     </div>
     """
 
@@ -540,8 +938,10 @@ def render_no_interventions() -> str:
 def render_intervention_error(message: str) -> str:
     """Render a user-friendly intervention loading error."""
     return f"""
-    <div class="placeholder-box">
-        Unable to load intervention recommendations. {escape(message)}
+    <div class="recommendations-container">
+        <div class="placeholder-box">
+            Unable to load intervention recommendations. {escape(message)}
+        </div>
     </div>
     """
 
@@ -616,22 +1016,31 @@ def generate_intervention_plan(student_display: str | None) -> str:
         return render_no_interventions()
 
     cards = "".join(render_intervention_card(recommendation) for recommendation in recommendations)
-    return f'<div class="intervention-list">{cards}</div>'
+    return f'<div class="recommendations-container"><div class="intervention-list">{cards}</div></div>'
 
 
 def update_student_dropdown(risk_filter: str) -> tuple[Any, str, str]:
     """Update student options when the risk category filter changes."""
     choices = student_choices(risk_filter)
-    selected = choices[0] if choices else None
+    if not choices:
+        selected = "No students available"
+        choices = [selected]
+        analysis_html = render_analysis(None)
+    else:
+        selected = choices[0]
+        analysis_html = render_analysis(selected)
+
     return (
-        gr.update(choices=choices, value=selected),
-        render_analysis(selected),
+        gr.Dropdown(choices=choices, value=selected, interactive=True),
+        analysis_html,
         render_intervention_placeholder(),
     )
 
 
 def update_student_analysis(student_display: str | None) -> tuple[str, str]:
     """Update the analysis panel when a student is selected."""
+    if student_display == "No students available":
+        student_display = None
     return render_analysis(student_display), render_intervention_placeholder()
 
 
@@ -656,45 +1065,64 @@ with gr.Blocks(
     title=APP_TITLE,
     analytics_enabled=False,
 ) as demo:
-    gr.HTML(
-        f"""
-        <div class="dashboard-header">
-            <h1 class="dashboard-title">{APP_TITLE}</h1>
-            <p class="dashboard-subtitle">{APP_SUBTITLE}</p>
-        </div>
-        """
-    )
+    gr.HTML(render_top_header())
 
     gr.HTML(render_kpi_cards())
+    gr.HTML(render_status_bar())
 
-    with gr.Column(elem_classes=["section-card", "filter-card"]):
-        gr.Markdown("### Filters")
-        with gr.Row():
+    with gr.Column(elem_classes=["controls-shell"]):
+        with gr.Row(elem_classes=["controls-row"]):
             risk_dropdown = gr.Dropdown(
                 label="Risk Category",
                 choices=RISK_FILTER_OPTIONS,
                 value="All",
                 interactive=True,
+                scale=1,
             )
             student_dropdown = gr.Dropdown(
-                label="Student",
+                label="Student Selector",
                 choices=initial_choices,
                 value=initial_student,
                 interactive=True,
+                scale=1,
             )
 
-    with gr.Row():
-        with gr.Column(scale=7):
+    with gr.Row(equal_height=True):
+        with gr.Column(scale=1, min_width=0, elem_classes=["balanced-panel"]):
             analysis_panel = gr.HTML(render_analysis(initial_student))
 
-        with gr.Column(scale=5, elem_classes=["section-card"]):
-            gr.Markdown("## Intervention Plan")
+        with gr.Column(scale=1, min_width=0, elem_classes=["section-card", "balanced-panel"]):
+            gr.Markdown("## Intervention Recommendations")
             generate_button = gr.Button(
                 "Generate Intervention Plan",
                 variant="primary",
                 elem_classes=["primary-button"],
             )
-            intervention_panel = gr.HTML(render_intervention_placeholder())
+            with gr.Column(elem_classes=["intervention-output-wrap"]):
+                intervention_panel = gr.HTML(render_intervention_placeholder())
+
+    with gr.Accordion("Advanced Options", open=False):
+        gr.Markdown(
+            """
+            **Custom Dataset Upload**
+
+            Coming Soon
+
+            Future versions will support:
+
+            - CSV ingestion
+            - Column mapping
+            - Data validation
+            - Automatic transformation pipelines
+            """
+        )
+        gr.HTML(
+            """
+            <div class="advanced-note">
+                This prototype focuses on the intervention workflow and currently uses a curated demonstration dataset.
+            </div>
+            """
+        )
 
     risk_dropdown.change(
         fn=update_student_dropdown,
