@@ -7,3 +7,21 @@ gradio*.out.log
 gradio*.err.log
 .venv/
 venv/
+
+# Test files
+test_llm.py
+test_ai_action_plan_pipelines.py
+test_ai_action_plan_pipelines.pyc
+test_ai_action_plan_pipelines.pyo   
+
+#models
+models/
+*.gguf
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

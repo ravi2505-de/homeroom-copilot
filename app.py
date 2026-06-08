@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from html import escape
 from pathlib import Path
 from typing import Any
@@ -7,6 +8,7 @@ from typing import Any
 import gradio as gr
 import pandas as pd
 
+from src.action_plan_generator import build_action_plan_prompt, clean_action_plan_output
 from src.intervention_engine import (
     InterventionRecommendation,
     load_intervention_library,
@@ -17,6 +19,8 @@ from src.root_cause import generate_root_causes
 
 APP_TITLE = "Homeroom Copilot"
 APP_SUBTITLE = "AI-Powered Student Intervention Assistant"
+
+logger = logging.getLogger(__name__)
 
 DATA_CSV_PATH = Path("data/students.csv")
 DATA_XLSX_FALLBACK_PATH = Path("data/student_data.csv.xlsx")
@@ -524,6 +528,47 @@ body::before {
     margin-top: 0;
 }
 
+.action-plan-shell {
+    border-top: 1px solid rgba(226, 232, 240, 0.9);
+    margin-top: 18px;
+    padding-top: 18px;
+}
+
+.action-plan-output {
+    background: rgba(248, 250, 252, 0.84);
+    border: 1px solid rgba(226, 232, 240, 0.92);
+    border-radius: 16px;
+    height: 650px;
+    max-height: 650px;
+    overflow-y: auto;
+    padding: 16px 18px;
+}
+
+.action-plan-output h1 {
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 850;
+    margin-top: 0;
+}
+
+.action-plan-output h2 {
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 800;
+    margin-top: 18px;
+}
+
+.action-plan-output li {
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 6px;
+}
+
+.action-plan-output p {
+    color: var(--muted);
+    line-height: 1.5;
+}
+
 .intervention-card {
     background: rgba(255, 255, 255, 0.95);
     border: 1px solid rgba(221, 231, 241, 0.96);
@@ -985,6 +1030,104 @@ def render_intervention_card(recommendation: InterventionRecommendation) -> str:
     """
 
 
+def student_risk_profile(student: pd.Series) -> dict[str, str]:
+    """Return the risk profile dictionary for a selected student record."""
+    assessment = assess_student_risk(
+        attendance=float(student["attendance_p3"]),
+        grades=float(student["grade_p3"]),
+        homework=float(student["homework_p3"]),
+        behavior_incidents=int(student["behavior_incident_count"]),
+    )
+    return {field_name: str(value) for field_name, value in assessment.items()}
+
+
+def recommendation_to_prompt_context(
+    recommendation: InterventionRecommendation,
+    intervention_library: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Merge a ranked recommendation with its source library metadata."""
+    matching_intervention = next(
+        (
+            intervention
+            for intervention in intervention_library
+            if str(intervention.get("intervention_name", ""))
+            == recommendation.intervention_name
+        ),
+        {},
+    )
+
+    return {
+        **matching_intervention,
+        "intervention_name": recommendation.intervention_name,
+        "category": recommendation.category,
+        "summary": recommendation.summary,
+        "expected_benefits": recommendation.expected_benefits,
+        "evidence_level": recommendation.evidence_level,
+        "source": recommendation.source,
+        "reference_url": recommendation.reference_url,
+        "relevance_score": recommendation.relevance_score,
+        "recommendation_reason_template": matching_intervention.get(
+            "recommendation_reason_template",
+            recommendation.recommendation_reason,
+        ),
+        "recommendation_reason": recommendation.recommendation_reason,
+    }
+
+
+def format_action_plan_source(intervention: dict[str, Any]) -> str:
+    """Format one intervention source as a Markdown link when a URL exists."""
+    intervention_name = str(intervention.get("intervention_name", "")).strip()
+    reference_url = str(intervention.get("reference_url", "")).strip()
+
+    if not intervention_name:
+        return "Unnamed intervention"
+    if reference_url:
+        safe_name = intervention_name.replace("[", "\\[").replace("]", "\\]")
+        safe_url = reference_url.replace(")", "%29")
+        return f"[{safe_name}]({safe_url})"
+    return intervention_name
+
+
+def generate_ai_action_plan(student_record: pd.Series) -> str:
+    """Generate a teacher-facing AI action plan for a selected student."""
+    from src.llm_service import generate_text
+
+    risk_profile = student_risk_profile(student_record)
+    root_causes = student_root_causes(student_record)
+    intervention_library = load_intervention_library()
+    recommendations = recommend_interventions(
+        root_causes=root_causes,
+        risk_profile=risk_profile,
+        intervention_library=intervention_library,
+        max_results=5,
+    )
+    prompt_interventions = [
+        recommendation_to_prompt_context(recommendation, intervention_library)
+        for recommendation in recommendations
+    ]
+
+    logger.info("Building action plan prompt...")
+    prompt = build_action_plan_prompt(
+        student_name=str(student_record["student_name"]),
+        risk_profile=risk_profile,
+        root_causes=root_causes,
+        recommended_interventions=prompt_interventions,
+    )
+
+    logger.info("Generating response with Qwen...")
+    action_plan = generate_text(prompt)
+    action_plan = clean_action_plan_output(
+        generated_text=action_plan,
+        student_name=str(student_record["student_name"]),
+        source_names=[
+            format_action_plan_source(intervention)
+            for intervention in prompt_interventions
+        ],
+    )
+    logger.info("Action plan generated successfully.")
+    return action_plan
+
+
 def generate_intervention_plan(student_display: str | None) -> str:
     """Generate and render intervention recommendations for a selected student."""
     student = get_student(student_display)
@@ -997,14 +1140,7 @@ def generate_intervention_plan(student_display: str | None) -> str:
         return render_intervention_error(str(error))
 
     root_causes = student_root_causes(student)
-    risk_profile = {
-        "attendance_risk": str(student["attendance_risk"]),
-        "academic_risk": str(student["academic_risk"]),
-        "homework_risk": str(student["homework_risk"]),
-        "behavior_risk": str(student["behavior_risk"]),
-        "engagement_risk": str(student["engagement_risk"]),
-        "overall_risk": str(student["overall_risk"]),
-    }
+    risk_profile = student_risk_profile(student)
     recommendations = recommend_interventions(
         root_causes=root_causes,
         risk_profile=risk_profile,
@@ -1017,6 +1153,32 @@ def generate_intervention_plan(student_display: str | None) -> str:
 
     cards = "".join(render_intervention_card(recommendation) for recommendation in recommendations)
     return f'<div class="recommendations-container"><div class="intervention-list">{cards}</div></div>'
+
+
+def render_action_plan_placeholder() -> str:
+    """Render placeholder markdown before AI action-plan generation."""
+    return (
+        "No AI action plan generated yet.\n\n"
+        "Click **Generate AI Action Plan** to create a teacher-facing roadmap."
+    )
+
+
+def generate_ai_action_plan_for_student(student_display: str | None) -> str:
+    """Generate an AI action plan for the currently selected student."""
+    student = get_student(student_display)
+    if student is None:
+        return "Unable to generate an AI action plan. Select a student first."
+
+    student_name = str(student["student_name"])
+    logger.info("Action plan generation requested for %s.", student_name)
+    try:
+        action_plan = generate_ai_action_plan(student)
+    except Exception as error:
+        logger.exception("Action plan generation failed for %s.", student_name)
+        return f"Unable to generate AI action plan: {error}"
+
+    logger.info("Action plan generation completed for %s.", student_name)
+    return action_plan
 
 
 def update_student_dropdown(risk_filter: str) -> tuple[Any, str, str]:
@@ -1033,7 +1195,7 @@ def update_student_dropdown(risk_filter: str) -> tuple[Any, str, str]:
     return (
         gr.Dropdown(choices=choices, value=selected, interactive=True),
         analysis_html,
-        render_intervention_placeholder(),
+        render_action_plan_placeholder(),
     )
 
 
@@ -1041,7 +1203,10 @@ def update_student_analysis(student_display: str | None) -> tuple[str, str]:
     """Update the analysis panel when a student is selected."""
     if student_display == "No students available":
         student_display = None
-    return render_analysis(student_display), render_intervention_placeholder()
+    return (
+        render_analysis(student_display),
+        render_action_plan_placeholder(),
+    )
 
 
 initial_choices = student_choices("All")
@@ -1092,14 +1257,16 @@ with gr.Blocks(
             analysis_panel = gr.HTML(render_analysis(initial_student))
 
         with gr.Column(scale=1, min_width=0, elem_classes=["section-card", "balanced-panel"]):
-            gr.Markdown("## Intervention Recommendations")
-            generate_button = gr.Button(
-                "Generate Intervention Plan",
+            gr.Markdown("## AI Action Plan")
+            generate_ai_button = gr.Button(
+                "Generate AI Action Plan",
                 variant="primary",
                 elem_classes=["primary-button"],
             )
-            with gr.Column(elem_classes=["intervention-output-wrap"]):
-                intervention_panel = gr.HTML(render_intervention_placeholder())
+            action_plan_panel = gr.Markdown(
+                render_action_plan_placeholder(),
+                elem_classes=["action-plan-output"],
+            )
 
     with gr.Accordion("Advanced Options", open=False):
         gr.Markdown(
@@ -1127,17 +1294,21 @@ with gr.Blocks(
     risk_dropdown.change(
         fn=update_student_dropdown,
         inputs=risk_dropdown,
-        outputs=[student_dropdown, analysis_panel, intervention_panel],
+        outputs=[
+            student_dropdown,
+            analysis_panel,
+            action_plan_panel,
+        ],
     )
     student_dropdown.change(
         fn=update_student_analysis,
         inputs=student_dropdown,
-        outputs=[analysis_panel, intervention_panel],
+        outputs=[analysis_panel, action_plan_panel],
     )
-    generate_button.click(
-        fn=generate_intervention_plan,
+    generate_ai_button.click(
+        fn=generate_ai_action_plan_for_student,
         inputs=student_dropdown,
-        outputs=intervention_panel,
+        outputs=action_plan_panel,
     )
 
 
