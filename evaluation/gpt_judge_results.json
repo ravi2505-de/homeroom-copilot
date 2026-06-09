@@ -7,62 +7,67 @@
     {
       "case_id": "case_001",
       "student_name": "Olivia Moore",
-      "scores": {
-        "relevance": 2,
-        "correctness": 1,
-        "root_cause_alignment": 1,
-        "evidence_alignment": 2,
-        "actionability": 3,
-        "clarity": 4,
-        "overall_quality": 2
-      },
-      "justification": "The student is low risk with stable performance and no elevated risk factors, but the plan introduces behavior issues, academic weakness, parent conferences, and targeted support that are not supported by the profile. It is readable and includes actionable steps, but the intervention intensity is not proportionate to the evidence."
-    },
-    {
-      "case_id": "case_002",
-      "student_name": "Ava Martinez",
-      "scores": {
-        "relevance": 2,
-        "correctness": 1,
-        "root_cause_alignment": 1,
-        "evidence_alignment": 2,
-        "actionability": 3,
-        "clarity": 4,
-        "overall_quality": 2
-      },
-      "justification": "The plan is overly intensive for a low-risk student with strong participation and no incidents. It invents potential tutoring needs, behavioral monitoring, peer check-ins, and after-school activities beyond the Continue Monitoring evidence. The language is clear, but the content does not accurately reflect the case."
-    },
-    {
-      "case_id": "case_003",
-      "student_name": "Noah Taylor",
-      "scores": {
-        "relevance": 2,
-        "correctness": 2,
-        "root_cause_alignment": 1,
-        "evidence_alignment": 3,
-        "actionability": 3,
-        "clarity": 4,
-        "overall_quality": 2
-      },
-      "justification": "Noah has only moderate academic risk and stable trends, but the plan emphasizes family challenges, engagement issues, rewards, and parent training that are not present in the student evidence. It uses the retrieved sources, but the implementation roadmap is not well aligned to the actual risk profile."
-    },
-    {
-      "case_id": "case_004",
-      "student_name": "William Anderson",
+      "risk_group": "Low",
       "scores": {
         "relevance": 3,
         "correctness": 2,
         "root_cause_alignment": 2,
         "evidence_alignment": 3,
-        "actionability": 3,
+        "actionability": 4,
         "clarity": 4,
         "overall_quality": 3
       },
-      "justification": "The plan is moderately relevant because William has moderate attendance, academic, and homework risk. However, the root causes are stable and the plan references decline, engagement score issues, and family after-school setup in ways that are not fully supported. Actions are understandable but somewhat generic."
+      "justification": "The revised plan is lighter and correctly limits sources to Continue Monitoring. However, it still implies academic improvement needs, parent discussion, and measurable improvement objectives for a low-risk student with stable performance and strong participation."
+    },
+    {
+      "case_id": "case_002",
+      "student_name": "Ava Martinez",
+      "risk_group": "Low",
+      "scores": {
+        "relevance": 3,
+        "correctness": 2,
+        "root_cause_alignment": 2,
+        "evidence_alignment": 3,
+        "actionability": 4,
+        "clarity": 4,
+        "overall_quality": 3
+      },
+      "justification": "The revised plan is more proportional than the original and uses only Continue Monitoring. It still over-monitors behavior, academic decline, gaps in learning, and intervention effectiveness despite Ava's low-risk profile and positive teacher notes."
+    },
+    {
+      "case_id": "case_003",
+      "student_name": "Noah Taylor",
+      "risk_group": "Moderate",
+      "scores": {
+        "relevance": 3,
+        "correctness": 2,
+        "root_cause_alignment": 2,
+        "evidence_alignment": 3,
+        "actionability": 4,
+        "clarity": 4,
+        "overall_quality": 3
+      },
+      "justification": "The revised plan is clearer and more actionable, but it still expands beyond Noah's evidence by emphasizing behavior and engagement issues when the primary identified risk is moderate academic risk with stable trends. It also introduces tutoring even though that was not one of the retrieved sources."
+    },
+    {
+      "case_id": "case_004",
+      "student_name": "William Anderson",
+      "risk_group": "Moderate",
+      "scores": {
+        "relevance": 3,
+        "correctness": 2,
+        "root_cause_alignment": 2,
+        "evidence_alignment": 3,
+        "actionability": 4,
+        "clarity": 4,
+        "overall_quality": 3
+      },
+      "justification": "The revised plan is practical and uses the retrieved sources, but it still over-prescribes support for a moderate-risk student with stable root-cause trends. It adds engagement, extracurricular, parent check-in, and behavior-at-home actions that are only weakly supported by the case evidence."
     },
     {
       "case_id": "case_005",
       "student_name": "John Smith",
+      "risk_group": "High",
       "scores": {
         "relevance": 4,
         "correctness": 4,
@@ -77,6 +82,7 @@
     {
       "case_id": "case_006",
       "student_name": "Emma Brown",
+      "risk_group": "High",
       "scores": {
         "relevance": 4,
         "correctness": 4,
@@ -91,6 +97,7 @@
     {
       "case_id": "case_007",
       "student_name": "Sarah Johnson",
+      "risk_group": "Critical",
       "scores": {
         "relevance": 4,
         "correctness": 4,
@@ -105,6 +112,7 @@
     {
       "case_id": "case_008",
       "student_name": "Lily Green",
+      "risk_group": "Critical",
       "scores": {
         "relevance": 4,
         "correctness": 4,
@@ -118,13 +126,51 @@
     }
   ],
   "averages": {
-    "relevance": 3.13,
-    "correctness": 2.75,
-    "root_cause_alignment": 2.5,
-    "evidence_alignment": 3.13,
-    "actionability": 3.5,
+    "relevance": 3.5,
+    "correctness": 3.0,
+    "root_cause_alignment": 2.88,
+    "evidence_alignment": 3.38,
+    "actionability": 4.0,
     "clarity": 4.0,
-    "overall_quality": 3.13
+    "overall_quality": 3.5
   },
-  "summary": "The generated plans are clearest and most useful for high- and critical-risk students. The weakest performance is on low-risk and stable-trend cases, where the plans often invent concerns or recommend support intensity that exceeds the evidence. Overall clarity is strong, but correctness and root-cause alignment are reduced by unsupported assumptions."
+  "risk_group_averages": {
+    "Low": {
+      "relevance": 3.0,
+      "correctness": 2.0,
+      "root_cause_alignment": 2.0,
+      "evidence_alignment": 3.0,
+      "actionability": 4.0,
+      "clarity": 4.0,
+      "overall_quality": 3.0
+    },
+    "Moderate": {
+      "relevance": 3.0,
+      "correctness": 2.0,
+      "root_cause_alignment": 2.0,
+      "evidence_alignment": 3.0,
+      "actionability": 4.0,
+      "clarity": 4.0,
+      "overall_quality": 3.0
+    },
+    "High": {
+      "relevance": 4.0,
+      "correctness": 4.0,
+      "root_cause_alignment": 4.0,
+      "evidence_alignment": 4.0,
+      "actionability": 4.0,
+      "clarity": 4.0,
+      "overall_quality": 4.0
+    },
+    "Critical": {
+      "relevance": 4.0,
+      "correctness": 4.0,
+      "root_cause_alignment": 3.5,
+      "evidence_alignment": 3.5,
+      "actionability": 4.0,
+      "clarity": 4.0,
+      "overall_quality": 4.0
+    }
+  },
+  "summary": "The revised prompt improves Low and Moderate action plans from the first pass by reducing action density and limiting source accumulation. Overall quality rises to 3.50 across all 8 cases. The remaining weakness is that Low and Moderate plans still infer mild concerns from stable student profiles, so correctness and root-cause alignment remain lower than High and Critical cases."
 }
