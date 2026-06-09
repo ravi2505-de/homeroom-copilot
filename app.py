@@ -14,6 +14,7 @@ from src.intervention_engine import (
     load_intervention_library,
     recommend_interventions,
 )
+from src.llm_service import generate_text
 from src.risk_engine import RiskAssessment, assess_student_risk
 from src.root_cause import generate_root_causes
 
@@ -1090,8 +1091,6 @@ def format_action_plan_source(intervention: dict[str, Any]) -> str:
 
 def generate_ai_action_plan(student_record: pd.Series) -> str:
     """Generate a teacher-facing AI action plan for a selected student."""
-    from src.llm_service import generate_text
-
     risk_profile = student_risk_profile(student_record)
     root_causes = student_root_causes(student_record)
     intervention_library = load_intervention_library()
