@@ -728,6 +728,135 @@ details {
         grid-template-columns: 1fr;
     }
 }
+
+@media (max-width: 767px) {
+    html,
+    body,
+    .gradio-container {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        width: 100% !important;
+    }
+
+    .gradio-container {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+    }
+
+    .dashboard-header,
+    .status-bar,
+    .controls-row,
+    .gradio-container > .contain > .gap,
+    .gradio-container .gradio-row {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .controls-row,
+    .controls-row > .form {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+
+    .controls-row > *,
+    .controls-row .block,
+    .controls-row .form,
+    .controls-row .input-container {
+        max-width: 100% !important;
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+
+    .gradio-container .gradio-row,
+    .gradio-container .gradio-row > .column,
+    .gradio-container .gradio-row > div {
+        display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        gap: 18px !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+
+    .balanced-panel {
+        flex: 0 0 auto !important;
+        height: auto !important;
+        max-width: 100% !important;
+        min-height: 0 !important;
+        min-width: 0 !important;
+        overflow: visible !important;
+        width: 100% !important;
+    }
+
+    .balanced-panel > .html-container,
+    .balanced-panel > .block,
+    .balanced-panel > div,
+    .balanced-panel .section-card {
+        height: auto !important;
+        max-width: 100% !important;
+        min-height: 0 !important;
+        min-width: 0 !important;
+        overflow: visible !important;
+        width: 100% !important;
+    }
+
+    .section-card {
+        box-sizing: border-box !important;
+        padding: 18px !important;
+        width: 100% !important;
+    }
+
+    .risk-grid,
+    .kpi-grid {
+        grid-template-columns: 1fr !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .root-cause-scroll {
+        height: auto !important;
+        max-height: 260px !important;
+        min-height: 160px !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    .action-plan-output {
+        box-sizing: border-box !important;
+        height: auto !important;
+        max-height: none !important;
+        max-width: 100% !important;
+        min-height: 360px !important;
+        overflow-x: hidden !important;
+        overflow-y: visible !important;
+        width: 100% !important;
+    }
+
+    .action-plan-output *,
+    .root-cause-scroll *,
+    .section-card *,
+    .trend-strip,
+    .student-meta,
+    .risk-value {
+        max-width: 100% !important;
+        overflow-wrap: anywhere !important;
+        white-space: normal !important;
+        word-break: normal !important;
+    }
+
+    .teacher-profile {
+        width: 100% !important;
+    }
+
+    button.primary-button,
+    .primary-button {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+}
 """
 
 
