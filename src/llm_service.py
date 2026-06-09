@@ -11,6 +11,7 @@ import time
 import traceback
 from typing import Any
 
+import spaces
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -49,6 +50,7 @@ def get_llm() -> tuple[Any, Any]:
     return _TOKENIZER, _MODEL
 
 
+@spaces.GPU
 def generate_text(prompt: str) -> str:
     """Generate text from a prompt using the singleton Qwen model."""
     try:
