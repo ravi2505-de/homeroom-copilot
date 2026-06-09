@@ -1,4 +1,0 @@
-gradio
-pandas
-llama-cpp-python
-huggingface-hub
