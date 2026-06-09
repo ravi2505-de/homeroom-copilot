@@ -408,20 +408,31 @@ body::before {
     height: 180px;
     min-height: 180px;
     max-height: 180px;
+    overflow-x: hidden;
     overflow-y: auto;
     padding-right: 8px;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
 }
 
 .root-list li {
     color: var(--text);
     line-height: 1.55;
     margin-bottom: 8px;
+    overflow-wrap: anywhere;
+    word-break: normal;
 }
 
 .analysis-subsection {
     border-top: 1px solid var(--border);
     margin-top: 18px;
     padding-top: 18px;
+}
+
+.root-cause-section {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 .trend-strip {
@@ -503,9 +514,11 @@ body::before {
 }
 
 .analysis-main-scroll {
-    flex: 0 0 auto;
-    min-height: auto;
-    overflow: visible;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
     padding-right: 0;
 }
 
@@ -817,11 +830,16 @@ details {
     }
 
     .root-cause-scroll {
-        height: auto !important;
-        max-height: 260px !important;
-        min-height: 160px !important;
+        box-sizing: border-box !important;
+        height: 220px !important;
+        max-height: 220px !important;
+        min-height: 180px !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        width: 100% !important;
         overflow-y: auto !important;
         overflow-x: hidden !important;
+        overscroll-behavior: contain !important;
     }
 
     .action-plan-output {
@@ -1058,7 +1076,7 @@ def render_analysis(student_display: str | None) -> str:
                     <div class="trend-strip">{trend_summary}</div>
                 </div>
 
-                <div class="analysis-subsection">
+                <div class="analysis-subsection root-cause-section">
                     <h3 class="panel-title">Root Causes</h3>
                     <div class="root-cause-scroll">
                         <ul class="root-list">{root_cause_items}</ul>
@@ -1438,7 +1456,6 @@ with gr.Blocks(
         inputs=student_dropdown,
         outputs=action_plan_panel,
     )
-
 
 if __name__ == "__main__":
     demo.launch(theme=theme, css=CSS)

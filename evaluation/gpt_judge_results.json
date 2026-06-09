@@ -1,0 +1,130 @@
+{
+  "rubric_scale": {
+    "minimum": 1,
+    "maximum": 5
+  },
+  "cases": [
+    {
+      "case_id": "case_001",
+      "student_name": "Olivia Moore",
+      "scores": {
+        "relevance": 2,
+        "correctness": 1,
+        "root_cause_alignment": 1,
+        "evidence_alignment": 2,
+        "actionability": 3,
+        "clarity": 4,
+        "overall_quality": 2
+      },
+      "justification": "The student is low risk with stable performance and no elevated risk factors, but the plan introduces behavior issues, academic weakness, parent conferences, and targeted support that are not supported by the profile. It is readable and includes actionable steps, but the intervention intensity is not proportionate to the evidence."
+    },
+    {
+      "case_id": "case_002",
+      "student_name": "Ava Martinez",
+      "scores": {
+        "relevance": 2,
+        "correctness": 1,
+        "root_cause_alignment": 1,
+        "evidence_alignment": 2,
+        "actionability": 3,
+        "clarity": 4,
+        "overall_quality": 2
+      },
+      "justification": "The plan is overly intensive for a low-risk student with strong participation and no incidents. It invents potential tutoring needs, behavioral monitoring, peer check-ins, and after-school activities beyond the Continue Monitoring evidence. The language is clear, but the content does not accurately reflect the case."
+    },
+    {
+      "case_id": "case_003",
+      "student_name": "Noah Taylor",
+      "scores": {
+        "relevance": 2,
+        "correctness": 2,
+        "root_cause_alignment": 1,
+        "evidence_alignment": 3,
+        "actionability": 3,
+        "clarity": 4,
+        "overall_quality": 2
+      },
+      "justification": "Noah has only moderate academic risk and stable trends, but the plan emphasizes family challenges, engagement issues, rewards, and parent training that are not present in the student evidence. It uses the retrieved sources, but the implementation roadmap is not well aligned to the actual risk profile."
+    },
+    {
+      "case_id": "case_004",
+      "student_name": "William Anderson",
+      "scores": {
+        "relevance": 3,
+        "correctness": 2,
+        "root_cause_alignment": 2,
+        "evidence_alignment": 3,
+        "actionability": 3,
+        "clarity": 4,
+        "overall_quality": 3
+      },
+      "justification": "The plan is moderately relevant because William has moderate attendance, academic, and homework risk. However, the root causes are stable and the plan references decline, engagement score issues, and family after-school setup in ways that are not fully supported. Actions are understandable but somewhat generic."
+    },
+    {
+      "case_id": "case_005",
+      "student_name": "John Smith",
+      "scores": {
+        "relevance": 4,
+        "correctness": 4,
+        "root_cause_alignment": 4,
+        "evidence_alignment": 4,
+        "actionability": 4,
+        "clarity": 4,
+        "overall_quality": 4
+      },
+      "justification": "The plan aligns well with John's declining attendance, academics, homework, and behavior concerns. It uses the retrieved Family Engagement, Mentoring/Tutoring, and After-School Opportunities interventions. Some actions are broad and the home-visit suggestion may exceed the provided evidence, but overall it is practical and coherent."
+    },
+    {
+      "case_id": "case_006",
+      "student_name": "Emma Brown",
+      "scores": {
+        "relevance": 4,
+        "correctness": 4,
+        "root_cause_alignment": 4,
+        "evidence_alignment": 4,
+        "actionability": 4,
+        "clarity": 4,
+        "overall_quality": 4
+      },
+      "justification": "The plan addresses Emma's declining attendance, academic performance, homework completion, and moderate behavior/engagement concerns. It follows the retrieved evidence and provides a clear sequence of monitoring, family engagement, tutoring, and after-school supports. It could be more specific, but it is generally accurate and usable."
+    },
+    {
+      "case_id": "case_007",
+      "student_name": "Sarah Johnson",
+      "scores": {
+        "relevance": 4,
+        "correctness": 4,
+        "root_cause_alignment": 4,
+        "evidence_alignment": 3,
+        "actionability": 4,
+        "clarity": 4,
+        "overall_quality": 4
+      },
+      "justification": "The plan is relevant to Sarah's critical attendance and homework risk, high academic/behavior risk, and declining participation. It appropriately uses family engagement, tutoring, individualized instruction, after-school support, and active learning. Evidence alignment is reduced because peer mediation and behavior management training are not among the retrieved interventions."
+    },
+    {
+      "case_id": "case_008",
+      "student_name": "Lily Green",
+      "scores": {
+        "relevance": 4,
+        "correctness": 4,
+        "root_cause_alignment": 3,
+        "evidence_alignment": 4,
+        "actionability": 4,
+        "clarity": 4,
+        "overall_quality": 4
+      },
+      "justification": "The plan addresses Lily's critical attendance, academic, homework, and behavior risk using retrieved interventions. It is clear and sequenced, but it under-addresses the severity of the behavior concern and physical altercation, focusing more heavily on academic support than immediate behavior coordination. Overall, it is usable but incomplete for a critical-risk profile."
+    }
+  ],
+  "averages": {
+    "relevance": 3.13,
+    "correctness": 2.75,
+    "root_cause_alignment": 2.5,
+    "evidence_alignment": 3.13,
+    "actionability": 3.5,
+    "clarity": 4.0,
+    "overall_quality": 3.13
+  },
+  "summary": "The generated plans are clearest and most useful for high- and critical-risk students. The weakest performance is on low-risk and stable-trend cases, where the plans often invent concerns or recommend support intensity that exceeds the evidence. Overall clarity is strong, but correctness and root-cause alignment are reduced by unsupported assumptions."
+}
