@@ -405,14 +405,12 @@ body::before {
 
 .root-cause-scroll {
     box-sizing: border-box;
-    height: 180px;
-    min-height: 180px;
-    max-height: 180px;
+    height: auto;
+    min-height: 0;
+    max-height: none;
     overflow-x: hidden;
-    overflow-y: auto;
-    padding-right: 8px;
-    overscroll-behavior: contain;
-    scrollbar-gutter: stable;
+    overflow-y: visible;
+    padding-right: 0;
 }
 
 .root-list li {
@@ -518,8 +516,11 @@ body::before {
     flex: 1 1 auto;
     flex-direction: column;
     min-height: 0;
-    overflow: hidden;
-    padding-right: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 10px;
+    scrollbar-gutter: stable;
 }
 
 .intervention-output-wrap {
@@ -554,8 +555,45 @@ body::before {
     border-radius: 16px;
     height: 650px;
     max-height: 650px;
+    overflow-x: hidden;
     overflow-y: auto;
+    overscroll-behavior: contain;
     padding: 16px 18px;
+    scrollbar-gutter: stable;
+}
+
+.analysis-main-scroll,
+.action-plan-output,
+.recommendations-container {
+    scrollbar-color: rgba(100, 116, 139, 0.68) rgba(226, 232, 240, 0.42);
+    scrollbar-width: auto;
+}
+
+.analysis-main-scroll::-webkit-scrollbar,
+.action-plan-output::-webkit-scrollbar,
+.recommendations-container::-webkit-scrollbar {
+    width: 11px;
+}
+
+.analysis-main-scroll::-webkit-scrollbar-track,
+.action-plan-output::-webkit-scrollbar-track,
+.recommendations-container::-webkit-scrollbar-track {
+    background: rgba(226, 232, 240, 0.42);
+    border-radius: 999px;
+}
+
+.analysis-main-scroll::-webkit-scrollbar-thumb,
+.action-plan-output::-webkit-scrollbar-thumb,
+.recommendations-container::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.68);
+    border: 2px solid rgba(226, 232, 240, 0.42);
+    border-radius: 999px;
+}
+
+.analysis-main-scroll::-webkit-scrollbar-thumb:hover,
+.action-plan-output::-webkit-scrollbar-thumb:hover,
+.recommendations-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(71, 85, 105, 0.88);
 }
 
 .action-plan-output h1 {
@@ -832,6 +870,25 @@ details {
         border-color: rgba(148, 163, 184, 0.34);
     }
 
+    .analysis-main-scroll,
+    .action-plan-output,
+    .recommendations-container {
+        scrollbar-color: rgba(148, 163, 184, 0.82) rgba(15, 23, 42, 0.58);
+    }
+
+    .analysis-main-scroll::-webkit-scrollbar-track,
+    .action-plan-output::-webkit-scrollbar-track,
+    .recommendations-container::-webkit-scrollbar-track {
+        background: rgba(15, 23, 42, 0.58);
+    }
+
+    .analysis-main-scroll::-webkit-scrollbar-thumb,
+    .action-plan-output::-webkit-scrollbar-thumb,
+    .recommendations-container::-webkit-scrollbar-thumb {
+        background: rgba(148, 163, 184, 0.82);
+        border-color: rgba(15, 23, 42, 0.58);
+    }
+
     .placeholder-box {
         background: rgba(30, 58, 138, 0.28);
         border-color: rgba(147, 197, 253, 0.48);
@@ -988,6 +1045,34 @@ body.dark,
     border-color: rgba(148, 163, 184, 0.34);
 }
 
+.dark .analysis-main-scroll,
+.dark .action-plan-output,
+.dark .recommendations-container,
+.gradio-container.dark .analysis-main-scroll,
+.gradio-container.dark .action-plan-output,
+.gradio-container.dark .recommendations-container {
+    scrollbar-color: rgba(148, 163, 184, 0.82) rgba(15, 23, 42, 0.58);
+}
+
+.dark .analysis-main-scroll::-webkit-scrollbar-track,
+.dark .action-plan-output::-webkit-scrollbar-track,
+.dark .recommendations-container::-webkit-scrollbar-track,
+.gradio-container.dark .analysis-main-scroll::-webkit-scrollbar-track,
+.gradio-container.dark .action-plan-output::-webkit-scrollbar-track,
+.gradio-container.dark .recommendations-container::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.58);
+}
+
+.dark .analysis-main-scroll::-webkit-scrollbar-thumb,
+.dark .action-plan-output::-webkit-scrollbar-thumb,
+.dark .recommendations-container::-webkit-scrollbar-thumb,
+.gradio-container.dark .analysis-main-scroll::-webkit-scrollbar-thumb,
+.gradio-container.dark .action-plan-output::-webkit-scrollbar-thumb,
+.gradio-container.dark .recommendations-container::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.82);
+    border-color: rgba(15, 23, 42, 0.58);
+}
+
 @media (max-width: 980px) {
     .dashboard-header {
         align-items: flex-start;
@@ -1126,15 +1211,14 @@ body.dark,
 
     .root-cause-scroll {
         box-sizing: border-box !important;
-        height: 220px !important;
-        max-height: 220px !important;
-        min-height: 180px !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
         max-width: 100% !important;
         min-width: 0 !important;
         width: 100% !important;
-        overflow-y: auto !important;
+        overflow-y: visible !important;
         overflow-x: hidden !important;
-        overscroll-behavior: contain !important;
     }
 
     .action-plan-output {
