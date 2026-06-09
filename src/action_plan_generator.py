@@ -118,8 +118,10 @@ Do NOT repeat:
 Your responsibility is ONLY to create a practical weekly implementation plan.
 
 PLANNING REQUIREMENTS
-- Use the retrieved intervention names and categories as available support
-  strategies.
+- Treat retrieved interventions as available options, not a checklist.
+- Select only the interventions needed for the student's risk level and root
+  causes.
+- Do not accumulate interventions just because they were retrieved.
 - Do not restate intervention descriptions.
 - Do not convert intervention names directly into action items.
 - Determine which actions should happen first.
@@ -129,12 +131,22 @@ PLANNING REQUIREMENTS
 
 RISK-BASED PLANNING
 Low Risk:
-- Monitoring and prevention.
-- 1-2 actions per week.
+- Monitoring, maintenance, and positive reinforcement only.
+- Maximum 1 action per week.
+- Do not recommend tutoring, mentoring, family meetings, after-school programs,
+  or behavior supports unless they are explicitly justified by the supplied
+  evidence.
+- If the only retrieved intervention is Continue Monitoring, use only Continue
+  Monitoring.
+- Do not escalate support for stable trends, no incidents, or positive teacher
+  observations.
 
 Moderate Risk:
-- Targeted support.
-- Up to 2 actions per week.
+- Light targeted support.
+- Select at most 1-2 retrieved interventions.
+- Avoid intervention accumulation.
+- If trends are stable, emphasize monitoring and prevention.
+- Use 1-2 actions per week.
 
 High Risk:
 - Structured intervention plan.
@@ -155,6 +167,10 @@ Actions must:
 - Build logically from week to week.
 - Include follow-up activities.
 - Include monitoring activities.
+- Stay proportional to the student's overall risk level.
+- Treat stable trends as monitoring signals, not intervention triggers.
+- Treat "No incidents" as a positive behavior signal, not a behavior concern.
+- Treat positive teacher observations as strengths, not intervention triggers.
 
 Do NOT:
 - Invent diagnoses.
@@ -171,28 +187,26 @@ REQUIRED OUTPUT FORMAT
 ## Week 1
 
 * Real action sentence
-* Real action sentence
+* Optional second action sentence only if justified by risk level
 
 ## Week 2
 
 * Real action sentence
-* Real action sentence
+* Optional second action sentence only if justified by risk level
 
 ## Week 3
 
 * Real action sentence
-* Real action sentence
+* Optional second action sentence only if justified by risk level
 
 ## Week 4
 
 * Real action sentence
-* Real action sentence
+* Optional second action sentence only if justified by risk level
 
 ## Sources Used
 
-* Retrieved Intervention Name
-* Retrieved Intervention Name
-* Retrieved Intervention Name
+* Selected intervention actually used
 
 OUTPUT RULES
 - Generate only the sections above.
@@ -202,10 +216,11 @@ OUTPUT RULES
 - Do not generate assessments.
 - Do not generate rationale sections.
 - Do not explain intervention selection.
-- Sources Used must contain only intervention names.
+- Sources Used must contain only intervention names actually used in the plan.
 - The Week sections must contain action sentences, not intervention names.
 - Do not use "Action:" labels.
-- Use a maximum of 2 actions per week.
+- Use a maximum of 1 action per week for Low Risk.
+- Use a maximum of 2 actions per week for Moderate, High, and Critical Risk.
 - Keep actions concise.
 - Focus only on execution and implementation.
 - The plan should feel like a weekly roadmap for teachers.

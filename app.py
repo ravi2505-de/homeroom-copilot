@@ -14,6 +14,7 @@ from src.intervention_engine import (
     load_intervention_library,
     recommend_interventions,
 )
+from src.llm_service import generate_text
 from src.risk_engine import RiskAssessment, assess_student_risk
 from src.root_cause import generate_root_causes
 
@@ -407,20 +408,31 @@ body::before {
     height: 180px;
     min-height: 180px;
     max-height: 180px;
+    overflow-x: hidden;
     overflow-y: auto;
     padding-right: 8px;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
 }
 
 .root-list li {
     color: var(--text);
     line-height: 1.55;
     margin-bottom: 8px;
+    overflow-wrap: anywhere;
+    word-break: normal;
 }
 
 .analysis-subsection {
     border-top: 1px solid var(--border);
     margin-top: 18px;
     padding-top: 18px;
+}
+
+.root-cause-section {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 .trend-strip {
@@ -502,9 +514,11 @@ body::before {
 }
 
 .analysis-main-scroll {
-    flex: 0 0 auto;
-    min-height: auto;
-    overflow: visible;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
     padding-right: 0;
 }
 
@@ -727,6 +741,140 @@ details {
         grid-template-columns: 1fr;
     }
 }
+
+@media (max-width: 767px) {
+    html,
+    body,
+    .gradio-container {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        width: 100% !important;
+    }
+
+    .gradio-container {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+    }
+
+    .dashboard-header,
+    .status-bar,
+    .controls-row,
+    .gradio-container > .contain > .gap,
+    .gradio-container .gradio-row {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .controls-row,
+    .controls-row > .form {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+
+    .controls-row > *,
+    .controls-row .block,
+    .controls-row .form,
+    .controls-row .input-container {
+        max-width: 100% !important;
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+
+    .gradio-container .gradio-row,
+    .gradio-container .gradio-row > .column,
+    .gradio-container .gradio-row > div {
+        display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        gap: 18px !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+
+    .balanced-panel {
+        flex: 0 0 auto !important;
+        height: auto !important;
+        max-width: 100% !important;
+        min-height: 0 !important;
+        min-width: 0 !important;
+        overflow: visible !important;
+        width: 100% !important;
+    }
+
+    .balanced-panel > .html-container,
+    .balanced-panel > .block,
+    .balanced-panel > div,
+    .balanced-panel .section-card {
+        height: auto !important;
+        max-width: 100% !important;
+        min-height: 0 !important;
+        min-width: 0 !important;
+        overflow: visible !important;
+        width: 100% !important;
+    }
+
+    .section-card {
+        box-sizing: border-box !important;
+        padding: 18px !important;
+        width: 100% !important;
+    }
+
+    .risk-grid,
+    .kpi-grid {
+        grid-template-columns: 1fr !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .root-cause-scroll {
+        box-sizing: border-box !important;
+        height: 220px !important;
+        max-height: 220px !important;
+        min-height: 180px !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        overscroll-behavior: contain !important;
+    }
+
+    .action-plan-output {
+        box-sizing: border-box !important;
+        height: auto !important;
+        max-height: none !important;
+        max-width: 100% !important;
+        min-height: 360px !important;
+        overflow-x: hidden !important;
+        overflow-y: visible !important;
+        width: 100% !important;
+    }
+
+    .action-plan-output *,
+    .root-cause-scroll *,
+    .section-card *,
+    .trend-strip,
+    .student-meta,
+    .risk-value {
+        max-width: 100% !important;
+        overflow-wrap: anywhere !important;
+        white-space: normal !important;
+        word-break: normal !important;
+    }
+
+    .teacher-profile {
+        width: 100% !important;
+    }
+
+    button.primary-button,
+    .primary-button {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+}
 """
 
 
@@ -928,7 +1076,7 @@ def render_analysis(student_display: str | None) -> str:
                     <div class="trend-strip">{trend_summary}</div>
                 </div>
 
-                <div class="analysis-subsection">
+                <div class="analysis-subsection root-cause-section">
                     <h3 class="panel-title">Root Causes</h3>
                     <div class="root-cause-scroll">
                         <ul class="root-list">{root_cause_items}</ul>
@@ -1090,8 +1238,6 @@ def format_action_plan_source(intervention: dict[str, Any]) -> str:
 
 def generate_ai_action_plan(student_record: pd.Series) -> str:
     """Generate a teacher-facing AI action plan for a selected student."""
-    from src.llm_service import generate_text
-
     risk_profile = student_risk_profile(student_record)
     root_causes = student_root_causes(student_record)
     intervention_library = load_intervention_library()
@@ -1310,7 +1456,6 @@ with gr.Blocks(
         inputs=student_dropdown,
         outputs=action_plan_panel,
     )
-
 
 if __name__ == "__main__":
     demo.launch(theme=theme, css=CSS)

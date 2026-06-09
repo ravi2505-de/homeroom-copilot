@@ -1,4 +1,6 @@
 gradio
 pandas
-llama-cpp-python==0.3.16
-huggingface-hub
+spaces
+torch
+transformers>=4.37.0
+accelerate

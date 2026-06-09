@@ -1,0 +1,904 @@
+[
+  {
+    "case_id": "case_001",
+    "student_name": "Olivia Moore",
+    "student_profile": {
+      "student_id": "S006",
+      "student_name": "Olivia Moore",
+      "gender": "F",
+      "grade_level": 7.0,
+      "homeroom": "7A",
+      "attendance_p1": 97.0,
+      "attendance_p2": 97.0,
+      "attendance_p3": 96.0,
+      "grade_p1": 92.0,
+      "grade_p2": 91.0,
+      "grade_p3": 90.0,
+      "homework_p1": 95.0,
+      "homework_p2": 94.0,
+      "homework_p3": 93.0,
+      "behavior_incident_count": 0.0,
+      "behavior_notes": "No incidents.",
+      "teacher_notes": "Strong classroom participation."
+    },
+    "risk_level": "Low",
+    "risk_factors": [
+      "No elevated category risks identified.",
+      "Overall Risk: Low"
+    ],
+    "risk_assessment": {
+      "attendance_risk": "Low",
+      "academic_risk": "Low",
+      "homework_risk": "Low",
+      "behavior_risk": "Low",
+      "engagement_score": 93.6,
+      "engagement_risk": "Low",
+      "overall_risk": "Low"
+    },
+    "root_cause_analysis": [
+      "Attendance remained relatively stable.",
+      "Academic performance remained relatively stable.",
+      "Homework completion remained relatively stable.",
+      "Behavior concerns: No incidents.",
+      "Teacher observations: Strong classroom participation."
+    ],
+    "retrieved_evidence_based_interventions": [
+      {
+        "intervention_name": "Continue Monitoring",
+        "category": "Monitoring",
+        "summary": [
+          "Student is currently performing well.",
+          "Continue positive reinforcement.",
+          "Maintain routine communication.",
+          "Reassess during the next reporting cycle."
+        ],
+        "expected_benefits": [
+          "Sustains current progress without unnecessary intervention fatigue.",
+          "Keeps teachers and families aligned on continued student success.",
+          "Supports early detection if the student's risk profile changes."
+        ],
+        "evidence_level": "school practice",
+        "source": "Homeroom Copilot",
+        "reference_url": "",
+        "recommendation_reason": "Recommended because the student is currently low risk and does not need a targeted intervention program."
+      }
+    ],
+    "evidence_sources": [
+      {
+        "label": "Continue Monitoring",
+        "reference_url": ""
+      }
+    ],
+    "generated_ai_action_plan": "# Action Plan\n\n## Week 1\n\n- Monitor attendance and academic performance closely. Ensure regular communication with parents about any concerning trends or behaviors.\n- Schedule a brief meeting with Olivia to discuss her engagement score and behavior issues. Provide constructive feedback and set clear expectations moving forward.\n\n## Week 2\n\n- Continue monitoring homework completion rates. Encourage students to complete assignments independently but offer help when needed.\n- Review class discussions and ensure they align with the curriculum objectives. Address any discrepancies between student understanding and lesson content promptly.\n\n## Week 3\n\n- Implement targeted support sessions focusing on areas where Olivia shows weakness in academics or behavior management. Assign specific tasks to practice these skills.\n- Arrange a parent-teacher conference to discuss ongoing challenges and develop a personalized plan for improvement.\n\n## Week 4\n\n- Conduct another review of Olivia's engagement score and behavior records. Adjust interventions based on new insights gained during the previous weeks.\n- Organize a small group activity focused on teamwork and collaboration to enhance social-emotional learning and improve engagement.\n\n## Sources Used\n\n- Continue Monitoring"
+  },
+  {
+    "case_id": "case_002",
+    "student_name": "Ava Martinez",
+    "student_profile": {
+      "student_id": "S008",
+      "student_name": "Ava Martinez",
+      "gender": "F",
+      "grade_level": 7.0,
+      "homeroom": "7A",
+      "attendance_p1": 98.0,
+      "attendance_p2": 98.0,
+      "attendance_p3": 97.0,
+      "grade_p1": 94.0,
+      "grade_p2": 94.0,
+      "grade_p3": 93.0,
+      "homework_p1": 96.0,
+      "homework_p2": 95.0,
+      "homework_p3": 95.0,
+      "behavior_incident_count": 0.0,
+      "behavior_notes": "No incidents.",
+      "teacher_notes": "Highly engaged learner."
+    },
+    "risk_level": "Low",
+    "risk_factors": [
+      "No elevated category risks identified.",
+      "Overall Risk: Low"
+    ],
+    "risk_assessment": {
+      "attendance_risk": "Low",
+      "academic_risk": "Low",
+      "homework_risk": "Low",
+      "behavior_risk": "Low",
+      "engagement_score": 95.4,
+      "engagement_risk": "Low",
+      "overall_risk": "Low"
+    },
+    "root_cause_analysis": [
+      "Attendance remained relatively stable.",
+      "Academic performance remained relatively stable.",
+      "Homework completion remained relatively stable.",
+      "Behavior concerns: No incidents.",
+      "Teacher observations: Highly engaged learner."
+    ],
+    "retrieved_evidence_based_interventions": [
+      {
+        "intervention_name": "Continue Monitoring",
+        "category": "Monitoring",
+        "summary": [
+          "Student is currently performing well.",
+          "Continue positive reinforcement.",
+          "Maintain routine communication.",
+          "Reassess during the next reporting cycle."
+        ],
+        "expected_benefits": [
+          "Sustains current progress without unnecessary intervention fatigue.",
+          "Keeps teachers and families aligned on continued student success.",
+          "Supports early detection if the student's risk profile changes."
+        ],
+        "evidence_level": "school practice",
+        "source": "Homeroom Copilot",
+        "reference_url": "",
+        "recommendation_reason": "Recommended because the student is currently low risk and does not need a targeted intervention program."
+      }
+    ],
+    "evidence_sources": [
+      {
+        "label": "Continue Monitoring",
+        "reference_url": ""
+      }
+    ],
+    "generated_ai_action_plan": "# Action Plan\n\n## Week 1\n\n- Monitor Ava's engagement score and behavior closely. If any significant changes occur, implement targeted support immediately.\n- Schedule a brief meeting with Ava's parents to discuss their expectations and provide them with an overview of Ava's current academic and behavioral status.\n\n## Week 2\n\n- Continue monitoring Ava's engagement score and behavior. If there are no significant changes, review the homework policy and ensure it aligns with Ava's needs.\n- Arrange for a short-term tutoring session if Ava shows signs of struggling with specific subjects or concepts.\n\n## Week 3\n\n- Conduct a more detailed assessment of Ava's learning pace and identify areas where she may need extra support. Implement a structured intervention plan focusing on these identified gaps.\n- Set up regular check-ins with Ava's peers to foster a supportive learning community within her class.\n\n## Week 4\n\n- Evaluate the effectiveness of the implemented interventions during this period. Adjust the approach based on Ava's response and adjust the frequency of meetings with parents accordingly.\n- Encourage Ava to participate in after-school clubs or extracurricular activities that can enhance her social skills and interests outside of academics.\n\n## Sources Used\n\n- Continue Monitoring"
+  },
+  {
+    "case_id": "case_003",
+    "student_name": "Noah Taylor",
+    "student_profile": {
+      "student_id": "S007",
+      "student_name": "Noah Taylor",
+      "gender": "M",
+      "grade_level": 7.0,
+      "homeroom": "7A",
+      "attendance_p1": 96.0,
+      "attendance_p2": 95.0,
+      "attendance_p3": 95.0,
+      "grade_p1": 89.0,
+      "grade_p2": 88.0,
+      "grade_p3": 88.0,
+      "homework_p1": 92.0,
+      "homework_p2": 91.0,
+      "homework_p3": 90.0,
+      "behavior_incident_count": 0.0,
+      "behavior_notes": "No incidents.",
+      "teacher_notes": "Consistent performer."
+    },
+    "risk_level": "Moderate",
+    "risk_factors": [
+      "Academic Risk: Moderate",
+      "Overall Risk: Moderate"
+    ],
+    "risk_assessment": {
+      "attendance_risk": "Low",
+      "academic_risk": "Moderate",
+      "homework_risk": "Low",
+      "behavior_risk": "Low",
+      "engagement_score": 91.6,
+      "engagement_risk": "Low",
+      "overall_risk": "Moderate"
+    },
+    "root_cause_analysis": [
+      "Attendance remained relatively stable.",
+      "Academic performance remained relatively stable.",
+      "Homework completion remained relatively stable.",
+      "Behavior concerns: No incidents.",
+      "Teacher observations: Consistent performer."
+    ],
+    "retrieved_evidence_based_interventions": [
+      {
+        "intervention_name": "After-School Opportunities",
+        "category": "Basic Core Strategy",
+        "summary": [
+          "Provide structured after-school learning opportunities.",
+          "Support academic and personal development.",
+          "Reduce unstructured time outside school."
+        ],
+        "expected_benefits": [
+          "improved engagement",
+          "better academic outcomes",
+          "increased school connection"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/after-school-out-of-school-opportunities/",
+        "recommendation_reason": "Recommended because engagement concerns were identified. Structured after-school activities increase school connection and participation. Matched risk areas: behavior and engagement."
+      },
+      {
+        "intervention_name": "Family Engagement",
+        "category": "Early Intervention",
+        "summary": [
+          "Establish regular communication with parents or guardians.",
+          "Share attendance, academic, and behavioral concerns early.",
+          "Encourage home support for learning activities."
+        ],
+        "expected_benefits": [
+          "improved attendance",
+          "improved homework completion",
+          "better academic achievement",
+          "improved student behavior"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/family-engagement/",
+        "recommendation_reason": "Recommended because attendance-related concerns were identified and family involvement is strongly associated with improved attendance and student accountability. Matched risk areas: behavior and family support."
+      }
+    ],
+    "evidence_sources": [
+      {
+        "label": "After-School Opportunities",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/after-school-out-of-school-opportunities/"
+      },
+      {
+        "label": "Family Engagement",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/family-engagement/"
+      }
+    ],
+    "generated_ai_action_plan": "# Action Plan\n\n## Week 1\n\n- Schedule regular check-ins with Noah's parents via phone calls or emails to discuss his academic progress and any challenges he may be facing at home.\n- Assign a peer mentor to help Noah stay engaged during after-school opportunities, such as tutoring sessions or study groups.\n\n## Week 2\n\n- Organize an open house event where parents can meet their child's teacher and other students to build positive relationships and increase engagement.\n- Encourage Noah to participate in extracurricular activities outside of school hours to provide him with more structured time away from homework.\n\n## Week 3\n\n- Implement a reward system for Noah based on his attendance and participation in after-school opportunities. This could include stickers, small prizes, or extra recess time.\n- Arrange for a professional development session for Noah's parents to learn about effective parenting techniques and how they can support their child's learning at home.\n\n## Week 4\n\n- Conduct a parent-teacher conference to review Noah's progress and set new goals for improvement. Provide resources and support materials to help parents better understand Noah's needs.\n- Invite Noah to share his experiences and successes with peers during class discussions to boost his confidence and encourage social interaction.\n\n## Sources Used\n\n- After-School Opportunities\n- Family Engagement"
+  },
+  {
+    "case_id": "case_004",
+    "student_name": "William Anderson",
+    "student_profile": {
+      "student_id": "S009",
+      "student_name": "William Anderson",
+      "gender": "M",
+      "grade_level": 7.0,
+      "homeroom": "7A",
+      "attendance_p1": 95.0,
+      "attendance_p2": 95.0,
+      "attendance_p3": 94.0,
+      "grade_p1": 87.0,
+      "grade_p2": 88.0,
+      "grade_p3": 87.0,
+      "homework_p1": 90.0,
+      "homework_p2": 90.0,
+      "homework_p3": 89.0,
+      "behavior_incident_count": 0.0,
+      "behavior_notes": "No incidents.",
+      "teacher_notes": "Works independently."
+    },
+    "risk_level": "Moderate",
+    "risk_factors": [
+      "Attendance Risk: Moderate",
+      "Academic Risk: Moderate",
+      "Homework Risk: Moderate",
+      "Overall Risk: Moderate"
+    ],
+    "risk_assessment": {
+      "attendance_risk": "Moderate",
+      "academic_risk": "Moderate",
+      "homework_risk": "Moderate",
+      "behavior_risk": "Low",
+      "engagement_score": 90.6,
+      "engagement_risk": "Low",
+      "overall_risk": "Moderate"
+    },
+    "root_cause_analysis": [
+      "Attendance remained relatively stable.",
+      "Academic performance remained relatively stable.",
+      "Homework completion remained relatively stable.",
+      "Behavior concerns: No incidents.",
+      "Teacher observations: Works independently."
+    ],
+    "retrieved_evidence_based_interventions": [
+      {
+        "intervention_name": "After-School Opportunities",
+        "category": "Basic Core Strategy",
+        "summary": [
+          "Provide structured after-school learning opportunities.",
+          "Support academic and personal development.",
+          "Reduce unstructured time outside school."
+        ],
+        "expected_benefits": [
+          "improved engagement",
+          "better academic outcomes",
+          "increased school connection"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/after-school-out-of-school-opportunities/",
+        "recommendation_reason": "Recommended because engagement concerns were identified. Structured after-school activities increase school connection and participation. Matched risk areas: behavior and engagement."
+      },
+      {
+        "intervention_name": "Family Engagement",
+        "category": "Early Intervention",
+        "summary": [
+          "Establish regular communication with parents or guardians.",
+          "Share attendance, academic, and behavioral concerns early.",
+          "Encourage home support for learning activities."
+        ],
+        "expected_benefits": [
+          "improved attendance",
+          "improved homework completion",
+          "better academic achievement",
+          "improved student behavior"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/family-engagement/",
+        "recommendation_reason": "Recommended because attendance-related concerns were identified and family involvement is strongly associated with improved attendance and student accountability. Matched risk areas: behavior and family support."
+      }
+    ],
+    "evidence_sources": [
+      {
+        "label": "After-School Opportunities",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/after-school-out-of-school-opportunities/"
+      },
+      {
+        "label": "Family Engagement",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/family-engagement/"
+      }
+    ],
+    "generated_ai_action_plan": "# Action Plan\n\n## Week 1\n\n- Monitor William Anderson's attendance and academic performance closely. If his grades or behavior show any signs of decline, implement targeted support immediately.\n- Schedule a brief meeting with William's parents to discuss their child's engagement score and homework habits. Encourage them to set up after-school opportunities at home if they haven't done so yet.\n\n## Week 2\n\n- Continue monitoring William's attendance and academic performance. If there are no significant changes, provide him with basic core strategy resources such as study guides and practice tests.\n- Contact William's family again to check on their involvement in after-school opportunities. Offer to help them set up more structured activities if needed.\n\n## Week 3\n\n- Review William's recent test results and assignments. If he shows improvement but still struggles academically, consider offering additional tutoring sessions outside of regular class hours.\n- Arrange a parent-teacher conference to discuss William's progress and any challenges he may be facing. This will also give you an opportunity to reinforce positive behaviors at home.\n\n## Week 4\n\n- Evaluate William's engagement score and homework completion rate over the past four weeks. If he continues to perform well, maintain current interventions and focus on reinforcing good behavior through consistent praise and recognition.\n- Discuss potential future after-school opportunities with William's parents. Explore options such as extracurricular clubs or community service projects that can enhance his learning experience beyond the classroom.\n\n## Sources Used\n\n- After-School Opportunities\n- Family Engagement"
+  },
+  {
+    "case_id": "case_005",
+    "student_name": "John Smith",
+    "student_profile": {
+      "student_id": "S002",
+      "student_name": "John Smith",
+      "gender": "M",
+      "grade_level": 7.0,
+      "homeroom": "7A",
+      "attendance_p1": 94.0,
+      "attendance_p2": 90.0,
+      "attendance_p3": 84.0,
+      "grade_p1": 79.0,
+      "grade_p2": 75.0,
+      "grade_p3": 72.0,
+      "homework_p1": 85.0,
+      "homework_p2": 76.0,
+      "homework_p3": 68.0,
+      "behavior_incident_count": 2.0,
+      "behavior_notes": "Frequent classroom interruptions.",
+      "teacher_notes": "Needs reminders to stay on task."
+    },
+    "risk_level": "High",
+    "risk_factors": [
+      "Attendance Risk: High",
+      "Academic Risk: High",
+      "Homework Risk: High",
+      "Behavior Risk: Moderate",
+      "Engagement Risk: Moderate",
+      "Overall Risk: High"
+    ],
+    "risk_assessment": {
+      "attendance_risk": "High",
+      "academic_risk": "High",
+      "homework_risk": "High",
+      "behavior_risk": "Moderate",
+      "engagement_score": 75.2,
+      "engagement_risk": "Moderate",
+      "overall_risk": "High"
+    },
+    "root_cause_analysis": [
+      "Attendance declined across reporting periods (94% → 90% → 84%).",
+      "Academic performance declined across reporting periods (79% → 75% → 72%).",
+      "Homework completion declined across reporting periods (85% → 76% → 68%).",
+      "Behavior concerns: Frequent classroom interruptions.",
+      "Teacher observations: Needs reminders to stay on task."
+    ],
+    "retrieved_evidence_based_interventions": [
+      {
+        "intervention_name": "Family Engagement",
+        "category": "Early Intervention",
+        "summary": [
+          "Establish regular communication with parents or guardians.",
+          "Share attendance, academic, and behavioral concerns early.",
+          "Encourage home support for learning activities."
+        ],
+        "expected_benefits": [
+          "improved attendance",
+          "improved homework completion",
+          "better academic achievement",
+          "improved student behavior"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/family-engagement/",
+        "recommendation_reason": "Recommended because attendance-related concerns were identified and family involvement is strongly associated with improved attendance and student accountability. Matched risk areas: attendance, homework completion, behavior and family support."
+      },
+      {
+        "intervention_name": "Mentoring/Tutoring",
+        "category": "Basic Core Strategy",
+        "summary": [
+          "Provide one-to-one mentoring or tutoring support.",
+          "Address specific academic skill gaps.",
+          "Build positive relationships and accountability."
+        ],
+        "expected_benefits": [
+          "improved academic performance",
+          "increased confidence",
+          "better engagement"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/mentoring-tutoring/",
+        "recommendation_reason": "Recommended because academic performance and homework completion concerns were identified. Individualized support can address learning gaps and improve performance. Matched risk areas: academic performance, homework completion and engagement."
+      },
+      {
+        "intervention_name": "After-School Opportunities",
+        "category": "Basic Core Strategy",
+        "summary": [
+          "Provide structured after-school learning opportunities.",
+          "Support academic and personal development.",
+          "Reduce unstructured time outside school."
+        ],
+        "expected_benefits": [
+          "improved engagement",
+          "better academic outcomes",
+          "increased school connection"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/after-school-out-of-school-opportunities/",
+        "recommendation_reason": "Recommended because engagement concerns were identified. Structured after-school activities increase school connection and participation. Matched risk areas: academic performance, behavior and engagement."
+      }
+    ],
+    "evidence_sources": [
+      {
+        "label": "Family Engagement",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/family-engagement/"
+      },
+      {
+        "label": "Mentoring/Tutoring",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/mentoring-tutoring/"
+      },
+      {
+        "label": "After-School Opportunities",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/after-school-out-of-school-opportunities/"
+      }
+    ],
+    "generated_ai_action_plan": "# Action Plan\n\n## Week 1\n\n- Implement Family Engagement program to monitor and improve attendance, academic performance, and homework completion.\n- Schedule regular check-ins with John's parents to discuss his progress and address any classroom behavior goals.\n\n## Week 2\n\n- Begin mentoring/tutoring sessions to provide one-on-one support for John's academic challenges.\n- Organize after-school opportunities for John to engage in extracurricular activities and build social skills.\n\n## Week 3\n\n- Continue family engagement efforts, including parent-teacher conferences and home visits.\n- Facilitate group tutoring sessions for John to work with peers who excel in certain subjects.\n\n## Week 4\n\n- Expand after-school opportunities to include more structured activities such as sports or clubs.\n- Conduct monthly progress reviews with John and his parents to track improvements and adjust interventions as needed.\n\n## Sources Used\n\n- Family Engagement\n- Mentoring/Tutoring\n- After-School Opportunities"
+  },
+  {
+    "case_id": "case_006",
+    "student_name": "Emma Brown",
+    "student_profile": {
+      "student_id": "S003",
+      "student_name": "Emma Brown",
+      "gender": "F",
+      "grade_level": 7.0,
+      "homeroom": "7A",
+      "attendance_p1": 93.0,
+      "attendance_p2": 91.0,
+      "attendance_p3": 88.0,
+      "grade_p1": 81.0,
+      "grade_p2": 79.0,
+      "grade_p3": 76.0,
+      "homework_p1": 83.0,
+      "homework_p2": 78.0,
+      "homework_p3": 71.0,
+      "behavior_incident_count": 1.0,
+      "behavior_notes": "Occasional off-task behavior.",
+      "teacher_notes": "Quiet but cooperative."
+    },
+    "risk_level": "High",
+    "risk_factors": [
+      "Attendance Risk: High",
+      "Academic Risk: Moderate",
+      "Homework Risk: High",
+      "Behavior Risk: Moderate",
+      "Engagement Risk: Moderate",
+      "Overall Risk: High"
+    ],
+    "risk_assessment": {
+      "attendance_risk": "High",
+      "academic_risk": "Moderate",
+      "homework_risk": "High",
+      "behavior_risk": "Moderate",
+      "engagement_score": 78.8,
+      "engagement_risk": "Moderate",
+      "overall_risk": "High"
+    },
+    "root_cause_analysis": [
+      "Attendance declined across reporting periods (93% → 91% → 88%).",
+      "Academic performance declined across reporting periods (81% → 79% → 76%).",
+      "Homework completion declined across reporting periods (83% → 78% → 71%).",
+      "Behavior concerns: Occasional off-task behavior.",
+      "Teacher observations: Quiet but cooperative."
+    ],
+    "retrieved_evidence_based_interventions": [
+      {
+        "intervention_name": "Family Engagement",
+        "category": "Early Intervention",
+        "summary": [
+          "Establish regular communication with parents or guardians.",
+          "Share attendance, academic, and behavioral concerns early.",
+          "Encourage home support for learning activities."
+        ],
+        "expected_benefits": [
+          "improved attendance",
+          "improved homework completion",
+          "better academic achievement",
+          "improved student behavior"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/family-engagement/",
+        "recommendation_reason": "Recommended because attendance-related concerns were identified and family involvement is strongly associated with improved attendance and student accountability. Matched risk areas: attendance, homework completion, behavior and family support."
+      },
+      {
+        "intervention_name": "Mentoring/Tutoring",
+        "category": "Basic Core Strategy",
+        "summary": [
+          "Provide one-to-one mentoring or tutoring support.",
+          "Address specific academic skill gaps.",
+          "Build positive relationships and accountability."
+        ],
+        "expected_benefits": [
+          "improved academic performance",
+          "increased confidence",
+          "better engagement"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/mentoring-tutoring/",
+        "recommendation_reason": "Recommended because academic performance and homework completion concerns were identified. Individualized support can address learning gaps and improve performance. Matched risk areas: academic performance, homework completion and engagement."
+      },
+      {
+        "intervention_name": "After-School Opportunities",
+        "category": "Basic Core Strategy",
+        "summary": [
+          "Provide structured after-school learning opportunities.",
+          "Support academic and personal development.",
+          "Reduce unstructured time outside school."
+        ],
+        "expected_benefits": [
+          "improved engagement",
+          "better academic outcomes",
+          "increased school connection"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/after-school-out-of-school-opportunities/",
+        "recommendation_reason": "Recommended because engagement concerns were identified. Structured after-school activities increase school connection and participation. Matched risk areas: academic performance, behavior and engagement."
+      }
+    ],
+    "evidence_sources": [
+      {
+        "label": "Family Engagement",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/family-engagement/"
+      },
+      {
+        "label": "Mentoring/Tutoring",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/mentoring-tutoring/"
+      },
+      {
+        "label": "After-School Opportunities",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/after-school-out-of-school-opportunities/"
+      }
+    ],
+    "generated_ai_action_plan": "# Action Plan\n\n## Week 1\n\n- Monitor attendance and academic performance closely. Contact parents if there is a significant decline or concern.\n- Review homework completion rates and provide feedback to students and parents regarding their progress.\n\n## Week 2\n\n- Implement family engagement strategy. Schedule regular meetings between the student and both parents to discuss progress and challenges.\n- Begin mentoring/tutoring sessions to help the student catch up academically.\n\n## Week 3\n\n- Continue family engagement meetings. Encourage parent involvement in the student's learning process.\n- Expand after-school opportunities to include more structured activities that can help improve engagement and reduce behavioral issues.\n\n## Week 4\n\n- Evaluate the effectiveness of the current interventions. Adjust strategies based on student progress and feedback.\n- Consider implementing additional after-school opportunities tailored to the student's needs.\n\n## Sources Used\n\n- Family Engagement\n- Mentoring/Tutoring\n- After-School Opportunities"
+  },
+  {
+    "case_id": "case_007",
+    "student_name": "Sarah Johnson",
+    "student_profile": {
+      "student_id": "S001",
+      "student_name": "Sarah Johnson",
+      "gender": "F",
+      "grade_level": 7.0,
+      "homeroom": "7A",
+      "attendance_p1": 96.0,
+      "attendance_p2": 92.0,
+      "attendance_p3": 78.0,
+      "grade_p1": 82.0,
+      "grade_p2": 74.0,
+      "grade_p3": 64.0,
+      "homework_p1": 88.0,
+      "homework_p2": 72.0,
+      "homework_p3": 42.0,
+      "behavior_incident_count": 3.0,
+      "behavior_notes": "Repeated classroom disruptions and conflict with peers.",
+      "teacher_notes": "Participation has declined significantly."
+    },
+    "risk_level": "Critical",
+    "risk_factors": [
+      "Attendance Risk: Critical",
+      "Academic Risk: High",
+      "Homework Risk: Critical",
+      "Behavior Risk: High",
+      "Engagement Risk: High",
+      "Overall Risk: Critical"
+    ],
+    "risk_assessment": {
+      "attendance_risk": "Critical",
+      "academic_risk": "High",
+      "homework_risk": "Critical",
+      "behavior_risk": "High",
+      "engagement_score": 60.8,
+      "engagement_risk": "High",
+      "overall_risk": "Critical"
+    },
+    "root_cause_analysis": [
+      "Attendance declined across reporting periods (96% → 92% → 78%).",
+      "Academic performance declined across reporting periods (82% → 74% → 64%).",
+      "Homework completion declined significantly (88% → 72% → 42%).",
+      "Behavior concerns: Repeated classroom disruptions and conflict with peers.",
+      "Teacher observations: Participation has declined significantly."
+    ],
+    "retrieved_evidence_based_interventions": [
+      {
+        "intervention_name": "Family Engagement",
+        "category": "Early Intervention",
+        "summary": [
+          "Establish regular communication with parents or guardians.",
+          "Share attendance, academic, and behavioral concerns early.",
+          "Encourage home support for learning activities."
+        ],
+        "expected_benefits": [
+          "improved attendance",
+          "improved homework completion",
+          "better academic achievement",
+          "improved student behavior"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/family-engagement/",
+        "recommendation_reason": "Recommended because attendance-related concerns were identified and family involvement is strongly associated with improved attendance and student accountability. Matched risk areas: attendance, homework completion, behavior and family support."
+      },
+      {
+        "intervention_name": "Mentoring/Tutoring",
+        "category": "Basic Core Strategy",
+        "summary": [
+          "Provide one-to-one mentoring or tutoring support.",
+          "Address specific academic skill gaps.",
+          "Build positive relationships and accountability."
+        ],
+        "expected_benefits": [
+          "improved academic performance",
+          "increased confidence",
+          "better engagement"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/mentoring-tutoring/",
+        "recommendation_reason": "Recommended because academic performance and homework completion concerns were identified. Individualized support can address learning gaps and improve performance. Matched risk areas: academic performance, homework completion and engagement."
+      },
+      {
+        "intervention_name": "After-School Opportunities",
+        "category": "Basic Core Strategy",
+        "summary": [
+          "Provide structured after-school learning opportunities.",
+          "Support academic and personal development.",
+          "Reduce unstructured time outside school."
+        ],
+        "expected_benefits": [
+          "improved engagement",
+          "better academic outcomes",
+          "increased school connection"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/after-school-out-of-school-opportunities/",
+        "recommendation_reason": "Recommended because engagement concerns were identified. Structured after-school activities increase school connection and participation. Matched risk areas: academic performance, behavior and engagement."
+      },
+      {
+        "intervention_name": "Individualized Instruction",
+        "category": "Managing and Improving Instruction",
+        "summary": [
+          "Adapt instruction to individual student needs.",
+          "Provide flexible learning approaches.",
+          "Address specific learning gaps."
+        ],
+        "expected_benefits": [
+          "improved academic outcomes",
+          "better understanding",
+          "higher confidence"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/individualized-instruction/",
+        "recommendation_reason": "Recommended because persistent academic difficulties were identified. Tailored instruction can address specific learning needs. Matched risk areas: academic performance and homework completion."
+      },
+      {
+        "intervention_name": "Active Learning",
+        "category": "Managing and Improving Instruction",
+        "summary": [
+          "Increase student participation during learning.",
+          "Use collaborative and problem-solving activities.",
+          "Encourage active involvement in classroom instruction."
+        ],
+        "expected_benefits": [
+          "improved engagement",
+          "better retention",
+          "higher motivation"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/active-learning/",
+        "recommendation_reason": "Recommended because classroom participation and engagement concerns were identified. Active learning strategies promote involvement and motivation. Matched risk areas: academic performance and engagement."
+      }
+    ],
+    "evidence_sources": [
+      {
+        "label": "Family Engagement",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/family-engagement/"
+      },
+      {
+        "label": "Mentoring/Tutoring",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/mentoring-tutoring/"
+      },
+      {
+        "label": "After-School Opportunities",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/after-school-out-of-school-opportunities/"
+      },
+      {
+        "label": "Individualized Instruction",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/individualized-instruction/"
+      },
+      {
+        "label": "Active Learning",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/active-learning/"
+      }
+    ],
+    "generated_ai_action_plan": "# Action Plan\n\n## Week 1\n\n- Schedule a family meeting with Sarah's parents to discuss attendance issues and develop a home study plan.\n- Arrange for a mentor or tutor to meet with Sarah once a week to provide academic support and help her catch up on missed work.\n\n## Week 2\n\n- Implement after-school tutoring sessions twice a week to reinforce learning and address homework challenges.\n- Begin individualized instruction sessions with Sarah to identify specific areas where she needs extra attention.\n\n## Week 3\n\n- Conduct behavior management training for both Sarah and other students in the class.\n- Set up a peer mediation program to resolve conflicts between Sarah and her classmates.\n\n## Week 4\n\n- Organize a parent-teacher conference to review Sarah's progress and set new goals for improvement.\n- Continue with active learning strategies in class to enhance engagement and participation.\n\n## Sources Used\n\n- Family Engagement\n- Mentoring/Tutoring\n- After-School Opportunities\n- Individualized Instruction\n- Active Learning"
+  },
+  {
+    "case_id": "case_008",
+    "student_name": "Lily Green",
+    "student_profile": {
+      "student_id": "S030",
+      "student_name": "Lily Green",
+      "gender": "F",
+      "grade_level": 7.0,
+      "homeroom": "7A",
+      "attendance_p1": 84.0,
+      "attendance_p2": 80.0,
+      "attendance_p3": 76.0,
+      "grade_p1": 68.0,
+      "grade_p2": 64.0,
+      "grade_p3": 58.0,
+      "homework_p1": 70.0,
+      "homework_p2": 60.0,
+      "homework_p3": 45.0,
+      "behavior_incident_count": 6.0,
+      "behavior_notes": "Multiple disciplinary incidents and physical altercation.",
+      "teacher_notes": "High-risk student requiring immediate intervention."
+    },
+    "risk_level": "Critical",
+    "risk_factors": [
+      "Attendance Risk: Critical",
+      "Academic Risk: Critical",
+      "Homework Risk: Critical",
+      "Behavior Risk: Critical",
+      "Engagement Risk: High",
+      "Overall Risk: Critical"
+    ],
+    "risk_assessment": {
+      "attendance_risk": "Critical",
+      "academic_risk": "Critical",
+      "homework_risk": "Critical",
+      "behavior_risk": "Critical",
+      "engagement_score": 60.0,
+      "engagement_risk": "High",
+      "overall_risk": "Critical"
+    },
+    "root_cause_analysis": [
+      "Attendance declined across reporting periods (84% → 80% → 76%).",
+      "Academic performance declined across reporting periods (68% → 64% → 58%).",
+      "Homework completion declined significantly (70% → 60% → 45%).",
+      "Behavior concerns: Multiple disciplinary incidents and physical altercation.",
+      "Teacher observations: High-risk student requiring immediate intervention."
+    ],
+    "retrieved_evidence_based_interventions": [
+      {
+        "intervention_name": "Family Engagement",
+        "category": "Early Intervention",
+        "summary": [
+          "Establish regular communication with parents or guardians.",
+          "Share attendance, academic, and behavioral concerns early.",
+          "Encourage home support for learning activities."
+        ],
+        "expected_benefits": [
+          "improved attendance",
+          "improved homework completion",
+          "better academic achievement",
+          "improved student behavior"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/family-engagement/",
+        "recommendation_reason": "Recommended because attendance-related concerns were identified and family involvement is strongly associated with improved attendance and student accountability. Matched risk areas: attendance, homework completion, behavior and family support."
+      },
+      {
+        "intervention_name": "Mentoring/Tutoring",
+        "category": "Basic Core Strategy",
+        "summary": [
+          "Provide one-to-one mentoring or tutoring support.",
+          "Address specific academic skill gaps.",
+          "Build positive relationships and accountability."
+        ],
+        "expected_benefits": [
+          "improved academic performance",
+          "increased confidence",
+          "better engagement"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/mentoring-tutoring/",
+        "recommendation_reason": "Recommended because academic performance and homework completion concerns were identified. Individualized support can address learning gaps and improve performance. Matched risk areas: academic performance, homework completion and engagement."
+      },
+      {
+        "intervention_name": "After-School Opportunities",
+        "category": "Basic Core Strategy",
+        "summary": [
+          "Provide structured after-school learning opportunities.",
+          "Support academic and personal development.",
+          "Reduce unstructured time outside school."
+        ],
+        "expected_benefits": [
+          "improved engagement",
+          "better academic outcomes",
+          "increased school connection"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/after-school-out-of-school-opportunities/",
+        "recommendation_reason": "Recommended because engagement concerns were identified. Structured after-school activities increase school connection and participation. Matched risk areas: academic performance, behavior and engagement."
+      },
+      {
+        "intervention_name": "Individualized Instruction",
+        "category": "Managing and Improving Instruction",
+        "summary": [
+          "Adapt instruction to individual student needs.",
+          "Provide flexible learning approaches.",
+          "Address specific learning gaps."
+        ],
+        "expected_benefits": [
+          "improved academic outcomes",
+          "better understanding",
+          "higher confidence"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/individualized-instruction/",
+        "recommendation_reason": "Recommended because persistent academic difficulties were identified. Tailored instruction can address specific learning needs. Matched risk areas: academic performance and homework completion."
+      },
+      {
+        "intervention_name": "Active Learning",
+        "category": "Managing and Improving Instruction",
+        "summary": [
+          "Increase student participation during learning.",
+          "Use collaborative and problem-solving activities.",
+          "Encourage active involvement in classroom instruction."
+        ],
+        "expected_benefits": [
+          "improved engagement",
+          "better retention",
+          "higher motivation"
+        ],
+        "evidence_level": "high",
+        "source": "National Dropout Prevention Center",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/active-learning/",
+        "recommendation_reason": "Recommended because classroom participation and engagement concerns were identified. Active learning strategies promote involvement and motivation. Matched risk areas: academic performance and engagement."
+      }
+    ],
+    "evidence_sources": [
+      {
+        "label": "Family Engagement",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/family-engagement/"
+      },
+      {
+        "label": "Mentoring/Tutoring",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/mentoring-tutoring/"
+      },
+      {
+        "label": "After-School Opportunities",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/after-school-out-of-school-opportunities/"
+      },
+      {
+        "label": "Individualized Instruction",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/individualized-instruction/"
+      },
+      {
+        "label": "Active Learning",
+        "reference_url": "https://dropoutprevention.org/effective-strategies/active-learning/"
+      }
+    ],
+    "generated_ai_action_plan": "# Action Plan\n\n## Week 1\n\n- Schedule a family meeting with Lily's parents to discuss attendance issues and develop a home study plan.\n- Arrange for a mentor or tutor to meet with Lily once a week to provide academic support and monitor her progress.\n\n## Week 2\n\n- Implement after-school tutoring sessions twice a week to help Lily catch up on missed homework.\n- Begin individualized instruction sessions three times a week to address specific learning needs identified during meetings.\n\n## Week 3\n\n- Continue after-school tutoring sessions twice a week.\n- Conduct one-on-one mentoring sessions with Lily every other day to reinforce positive behavior changes.\n\n## Week 4\n\n- Increase after-school tutoring frequency to four times a week.\n- Expand individualized instruction to include more advanced topics to challenge Lily academically.\n\n## Sources Used\n\n- Family Engagement\n- Mentoring/Tutoring\n- After-School Opportunities\n- Individualized Instruction\n- Active Learning"
+  }
+]
