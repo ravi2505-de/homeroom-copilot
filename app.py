@@ -693,6 +693,301 @@ details {
     border-radius: 16px !important;
 }
 
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-soft: #1E3A8A;
+        --background: #0B1220;
+        --card: #182235;
+        --text: #F8FAFC;
+        --muted: #CBD5E1;
+        --border: rgba(148, 163, 184, 0.34);
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.28);
+        --shadow-soft: 0 4px 18px rgba(0, 0, 0, 0.24);
+    }
+
+    body,
+    .gradio-container {
+        background: linear-gradient(180deg, #0B1220 0%, #111C2F 100%) !important;
+        color: var(--text) !important;
+    }
+
+    body::before {
+        background: radial-gradient(
+            circle,
+            rgba(37, 99, 235, 0.22) 0%,
+            rgba(37, 99, 235, 0.08) 36%,
+            rgba(37, 99, 235, 0.00) 72%
+        );
+    }
+
+    .section-card,
+    .balanced-panel .section-card,
+    .intervention-card {
+        background: rgba(24, 34, 53, 0.97);
+        border-color: rgba(148, 163, 184, 0.36);
+        box-shadow: var(--shadow);
+    }
+
+    .kpi-card {
+        background: rgba(24, 34, 53, 0.96);
+        border-color: rgba(148, 163, 184, 0.38);
+        box-shadow: var(--shadow-soft);
+    }
+
+    .kpi-card:hover {
+        border-color: rgba(191, 219, 254, 0.46);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
+    }
+
+    .brand-title,
+    .dashboard-title,
+    .teacher-name,
+    .kpi-value,
+    .panel-title,
+    .student-name,
+    .risk-value,
+    .root-list li,
+    .action-plan-output h1,
+    .action-plan-output h2,
+    .action-plan-output li,
+    .intervention-card h2,
+    .intervention-section-title,
+    .intervention-card li,
+    label,
+    .gr-input-label {
+        color: #F8FAFC !important;
+    }
+
+    .brand-subtitle,
+    .dashboard-subtitle,
+    .teacher-school,
+    .teacher-role,
+    .student-meta,
+    .risk-label,
+    .trend-strip,
+    .action-plan-output p,
+    .intervention-meta {
+        color: #CBD5E1 !important;
+    }
+
+    .kpi-label {
+        color: #DDE7F5;
+    }
+
+    .section-eyebrow,
+    .intervention-category,
+    .intervention-meta a {
+        color: #93C5FD;
+    }
+
+    .teacher-avatar {
+        background: rgba(37, 99, 235, 0.22);
+        color: #BFDBFE;
+    }
+
+    .status-pill {
+        background: rgba(24, 34, 53, 0.86);
+        border-color: rgba(148, 163, 184, 0.38);
+        color: #E2E8F0;
+    }
+
+    .status-check {
+        background: rgba(34, 197, 94, 0.20);
+        color: #86EFAC;
+    }
+
+    .demo-badge {
+        background: rgba(37, 99, 235, 0.20);
+        border-color: rgba(147, 197, 253, 0.44);
+        color: #BFDBFE;
+    }
+
+    .controls-row .block,
+    .controls-row .form,
+    .controls-row .input-container,
+    .controls-row .wrap,
+    .controls-row input,
+    .controls-row textarea,
+    .controls-row select {
+        background: #263449 !important;
+        border-color: rgba(148, 163, 184, 0.42) !important;
+        color: #F8FAFC !important;
+    }
+
+    .controls-row svg,
+    .controls-row button {
+        color: #E2E8F0 !important;
+        fill: #E2E8F0 !important;
+    }
+
+    .risk-item,
+    .analysis-subsection,
+    .action-plan-shell {
+        border-color: rgba(148, 163, 184, 0.34);
+    }
+
+    .action-plan-output,
+    .advanced-note {
+        background: rgba(15, 23, 42, 0.62);
+        border-color: rgba(148, 163, 184, 0.34);
+    }
+
+    .placeholder-box {
+        background: rgba(30, 58, 138, 0.28);
+        border-color: rgba(147, 197, 253, 0.48);
+        color: #DBEAFE;
+    }
+
+    .placeholder-title {
+        color: #EFF6FF;
+    }
+
+    .placeholder-copy {
+        color: #BFDBFE;
+    }
+}
+
+.dark,
+body.dark,
+.gradio-container.dark {
+    --primary-soft: #1E3A8A;
+    --background: #0B1220;
+    --card: #182235;
+    --text: #F8FAFC;
+    --muted: #CBD5E1;
+    --border: rgba(148, 163, 184, 0.34);
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.28);
+    --shadow-soft: 0 4px 18px rgba(0, 0, 0, 0.24);
+}
+
+body.dark,
+.dark .gradio-container,
+.gradio-container.dark {
+    background: linear-gradient(180deg, #0B1220 0%, #111C2F 100%) !important;
+    color: var(--text) !important;
+}
+
+.dark .section-card,
+.dark .balanced-panel .section-card,
+.dark .intervention-card,
+.gradio-container.dark .section-card,
+.gradio-container.dark .balanced-panel .section-card,
+.gradio-container.dark .intervention-card {
+    background: rgba(24, 34, 53, 0.97);
+    border-color: rgba(148, 163, 184, 0.36);
+    box-shadow: var(--shadow);
+}
+
+.dark .kpi-card,
+.gradio-container.dark .kpi-card {
+    background: rgba(24, 34, 53, 0.96);
+    border-color: rgba(148, 163, 184, 0.38);
+    box-shadow: var(--shadow-soft);
+}
+
+.dark .brand-title,
+.dark .dashboard-title,
+.dark .teacher-name,
+.dark .kpi-value,
+.dark .panel-title,
+.dark .student-name,
+.dark .risk-value,
+.dark .root-list li,
+.dark .action-plan-output h1,
+.dark .action-plan-output h2,
+.dark .action-plan-output li,
+.dark .intervention-card h2,
+.dark .intervention-section-title,
+.dark .intervention-card li,
+.dark label,
+.dark .gr-input-label,
+.gradio-container.dark .brand-title,
+.gradio-container.dark .teacher-name,
+.gradio-container.dark .kpi-value,
+.gradio-container.dark .panel-title,
+.gradio-container.dark .student-name {
+    color: #F8FAFC !important;
+}
+
+.dark .brand-subtitle,
+.dark .dashboard-subtitle,
+.dark .teacher-school,
+.dark .teacher-role,
+.dark .student-meta,
+.dark .risk-label,
+.dark .trend-strip,
+.dark .action-plan-output p,
+.dark .intervention-meta,
+.gradio-container.dark .brand-subtitle,
+.gradio-container.dark .teacher-school,
+.gradio-container.dark .teacher-role,
+.gradio-container.dark .student-meta,
+.gradio-container.dark .risk-label {
+    color: #CBD5E1 !important;
+}
+
+.dark .kpi-label,
+.gradio-container.dark .kpi-label {
+    color: #DDE7F5;
+}
+
+.dark .section-eyebrow,
+.dark .intervention-category,
+.dark .intervention-meta a,
+.gradio-container.dark .section-eyebrow {
+    color: #93C5FD;
+}
+
+.dark .status-pill,
+.gradio-container.dark .status-pill {
+    background: rgba(24, 34, 53, 0.86);
+    border-color: rgba(148, 163, 184, 0.38);
+    color: #E2E8F0;
+}
+
+.dark .demo-badge,
+.gradio-container.dark .demo-badge {
+    background: rgba(37, 99, 235, 0.20);
+    border-color: rgba(147, 197, 253, 0.44);
+    color: #BFDBFE;
+}
+
+.dark .controls-row .block,
+.dark .controls-row .form,
+.dark .controls-row .input-container,
+.dark .controls-row .wrap,
+.dark .controls-row input,
+.dark .controls-row textarea,
+.dark .controls-row select,
+.gradio-container.dark .controls-row .block,
+.gradio-container.dark .controls-row .form,
+.gradio-container.dark .controls-row .input-container,
+.gradio-container.dark .controls-row .wrap,
+.gradio-container.dark .controls-row input,
+.gradio-container.dark .controls-row textarea,
+.gradio-container.dark .controls-row select {
+    background: #263449 !important;
+    border-color: rgba(148, 163, 184, 0.42) !important;
+    color: #F8FAFC !important;
+}
+
+.dark .risk-item,
+.dark .analysis-subsection,
+.dark .action-plan-shell,
+.gradio-container.dark .risk-item,
+.gradio-container.dark .analysis-subsection,
+.gradio-container.dark .action-plan-shell {
+    border-color: rgba(148, 163, 184, 0.34);
+}
+
+.dark .action-plan-output,
+.dark .advanced-note,
+.gradio-container.dark .action-plan-output,
+.gradio-container.dark .advanced-note {
+    background: rgba(15, 23, 42, 0.62);
+    border-color: rgba(148, 163, 184, 0.34);
+}
+
 @media (max-width: 980px) {
     .dashboard-header {
         align-items: flex-start;

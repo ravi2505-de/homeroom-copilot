@@ -90,23 +90,19 @@
 
 ## Week 1
 
-- Schedule regular check-ins with Noah's parents via phone calls or emails to discuss his academic progress and any challenges he may be facing at home.
-- Assign a peer mentor to help Noah stay engaged during after-school opportunities, such as tutoring sessions or study groups.
+- Monitor Noah's attendance and academic performance closely. Ensure he completes his homework regularly. Encourage him to engage more actively in class discussions and group projects.
 
 ## Week 2
 
-- Organize an open house event where parents can meet their child's teacher and other students to build positive relationships and increase engagement.
-- Encourage Noah to participate in extracurricular activities outside of school hours to provide him with more structured time away from homework.
+- Schedule a brief meeting with Noah's parents to discuss their expectations and any challenges they face regarding his education. Provide them with resources and strategies to help improve his engagement and behavior.
 
 ## Week 3
 
-- Implement a reward system for Noah based on his attendance and participation in after-school opportunities. This could include stickers, small prizes, or extra recess time.
-- Arrange for a professional development session for Noah's parents to learn about effective parenting techniques and how they can support their child's learning at home.
+- Arrange for an extra session during lunchtime where Noah can work one-on-one with a tutor who specializes in helping students build confidence and focus. This will also provide him with additional practice time.
 
 ## Week 4
 
-- Conduct a parent-teacher conference to review Noah's progress and set new goals for improvement. Provide resources and support materials to help parents better understand Noah's needs.
-- Invite Noah to share his experiences and successes with peers during class discussions to boost his confidence and encourage social interaction.
+- Organize a small group activity focused on teamwork and problem-solving skills. This could be done through a game or project-based learning activity. Encourage Noah to participate actively and share his ideas.
 
 ## Sources Used
 
