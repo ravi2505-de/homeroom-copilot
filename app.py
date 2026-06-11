@@ -406,11 +406,12 @@ body::before {
 .root-cause-scroll {
     box-sizing: border-box;
     height: auto;
-    min-height: 0;
-    max-height: none;
+    min-height: 96px;
+    max-height: 220px;
     overflow-x: hidden;
-    overflow-y: visible;
-    padding-right: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: auto;
+    padding-right: 6px;
 }
 
 .root-list li {
@@ -485,8 +486,8 @@ body::before {
 }
 
 .balanced-panel {
-    height: 840px !important;
-    min-height: 840px !important;
+    height: 880px !important;
+    min-height: 880px !important;
     overflow: hidden !important;
 }
 
@@ -518,7 +519,7 @@ body::before {
     min-height: 0;
     overflow-x: hidden;
     overflow-y: auto;
-    overscroll-behavior: contain;
+    overscroll-behavior-y: auto;
     padding-right: 10px;
     scrollbar-gutter: stable;
 }
@@ -557,7 +558,7 @@ body::before {
     max-height: 650px;
     overflow-x: hidden;
     overflow-y: auto;
-    overscroll-behavior: contain;
+    overscroll-behavior-y: auto;
     padding: 16px 18px;
     scrollbar-gutter: stable;
 }
@@ -1212,23 +1213,25 @@ body.dark,
     .root-cause-scroll {
         box-sizing: border-box !important;
         height: auto !important;
-        max-height: none !important;
-        min-height: 0 !important;
+        max-height: 240px !important;
+        min-height: 96px !important;
         max-width: 100% !important;
         min-width: 0 !important;
         width: 100% !important;
-        overflow-y: visible !important;
+        overflow-y: auto !important;
         overflow-x: hidden !important;
+        overscroll-behavior-y: auto !important;
     }
 
     .action-plan-output {
         box-sizing: border-box !important;
         height: auto !important;
-        max-height: none !important;
+        max-height: 70vh !important;
         max-width: 100% !important;
         min-height: 360px !important;
         overflow-x: hidden !important;
-        overflow-y: visible !important;
+        overflow-y: auto !important;
+        overscroll-behavior-y: auto !important;
         width: 100% !important;
     }
 

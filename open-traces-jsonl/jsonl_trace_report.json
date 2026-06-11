@@ -1,0 +1,126 @@
+{
+  "source_format": "jsonl",
+  "source_file": "rollout-2026-06-07T14-26-07-019ea38c-b315-7f40-a7f5-a53e2e9d91c8.jsonl",
+  "traces": [
+    {
+      "file": "01_mobile_responsiveness_fix_sanitized.jsonl",
+      "topic": "Mobile Responsiveness Fix",
+      "summary": "Mobile-only layout fixes that preserved the desktop dashboard while making Student Analysis and AI Action Plan readable on iPhone-sized screens.",
+      "line_range": "3768-3967",
+      "events": 201,
+      "redactions": {
+        "demo name: John Smith": 1,
+        "demo name: Sarah Johnson": 1,
+        "local app URL": 31,
+        "local user path": 27,
+        "encrypted_content": "redacted where present",
+        "compacted_history": "removed where present",
+        "internal_tool_documentation": "redacted where present"
+      },
+      "scan_hits": []
+    },
+    {
+      "file": "02_evaluation_framework_creation_sanitized.jsonl",
+      "topic": "Evaluation Framework Creation",
+      "summary": "Evaluation workflow simplification into developer-only case export artifacts, with no user-facing export controls.",
+      "line_range": "3968-4398",
+      "events": 431,
+      "redactions": {
+        "HF token-like string": 2,
+        "demo name: Ava Martinez": 3,
+        "demo name: Emma Brown": 3,
+        "demo name: James Carter": 1,
+        "demo name: John Smith": 4,
+        "demo name: Lily Green": 4,
+        "demo name: Lincoln Middle School": 3,
+        "demo name: Noah Taylor": 3,
+        "demo name: Olivia Moore": 4,
+        "demo name: Sarah Johnson": 11,
+        "demo name: William Anderson": 3,
+        "local app URL": 24,
+        "local user path": 91,
+        "encrypted_content": "redacted where present",
+        "compacted_history": "removed where present",
+        "internal_tool_documentation": "redacted where present"
+      },
+      "scan_hits": []
+    },
+    {
+      "file": "03_evaluation_analysis_sanitized.jsonl",
+      "topic": "Evaluation Analysis",
+      "summary": "Evaluation case preparation, GPT-style judging, type-wise scoring, and analysis showing low/moderate risk over-intervention.",
+      "line_range": "4399-4721",
+      "events": 324,
+      "redactions": {
+        "Codex attachment path": 2,
+        "HF token-like string": 2,
+        "demo name: Ava Martinez": 36,
+        "demo name: Emma Brown": 25,
+        "demo name: John Smith": 25,
+        "demo name: Lily Green": 26,
+        "demo name: Noah Taylor": 46,
+        "demo name: Olivia Moore": 50,
+        "demo name: Sarah Johnson": 25,
+        "demo name: William Anderson": 45,
+        "local user path": 112,
+        "encrypted_content": "redacted where present",
+        "compacted_history": "removed where present",
+        "internal_tool_documentation": "redacted where present"
+      },
+      "scan_hits": []
+    },
+    {
+      "file": "04_risk_aware_prompt_refinement_sanitized.jsonl",
+      "topic": "Risk-Aware Prompt Refinement",
+      "summary": "Prompt diagnosis and revision so low-risk students receive monitoring, moderate-risk students receive targeted support, and high/critical students keep structured plans.",
+      "line_range": "4562-4729",
+      "events": 169,
+      "redactions": {
+        "HF token-like string": 2,
+        "demo name: Ava Martinez": 16,
+        "demo name: Emma Brown": 8,
+        "demo name: John Smith": 8,
+        "demo name: Lily Green": 8,
+        "demo name: Noah Taylor": 29,
+        "demo name: Olivia Moore": 29,
+        "demo name: Sarah Johnson": 8,
+        "demo name: William Anderson": 24,
+        "local user path": 36,
+        "encrypted_content": "redacted where present",
+        "compacted_history": "removed where present",
+        "internal_tool_documentation": "redacted where present"
+      },
+      "scan_hits": []
+    },
+    {
+      "file": "05_dark_mode_polish_sanitized.jsonl",
+      "topic": "Dark Mode Polish",
+      "summary": "Dark-mode readability and contrast pass that preserved layout and day-mode styling while improving card, input, badge, and teacher profile contrast.",
+      "line_range": "4730-4794",
+      "events": 66,
+      "redactions": {
+        "demo name: Lincoln Middle School": 1,
+        "demo name: Sarah Johnson": 1,
+        "local user path": 10,
+        "encrypted_content": "redacted where present",
+        "compacted_history": "removed where present",
+        "internal_tool_documentation": "redacted where present"
+      },
+      "scan_hits": []
+    },
+    {
+      "file": "06_scroll_simplification_sanitized.jsonl",
+      "topic": "Scroll Simplification",
+      "summary": "Scroll audit and CSS cleanup to reduce nested scroll regions, improve scrollbar usability, and keep Root Causes / AI Action Plan content readable.",
+      "line_range": "4795-4849",
+      "events": 56,
+      "redactions": {
+        "local user path": 7,
+        "encrypted_content": "redacted where present",
+        "compacted_history": "removed where present",
+        "internal_tool_documentation": "redacted where present"
+      },
+      "scan_hits": []
+    }
+  ]
+}
