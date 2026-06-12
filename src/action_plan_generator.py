@@ -289,6 +289,7 @@ OUTPUT RULES
 - Do not generate assessments.
 - Do not generate rationale sections.
 - Do not explain intervention selection.
+- Do not write "Source Used" or "Sources Used" inside Week 1-4.
 - Sources Used must contain only intervention names actually used in the plan.
 - The Week sections must contain action sentences, not intervention names.
 - Do not use "Action:" labels.
@@ -458,6 +459,53 @@ def _clean_action_item(text: str) -> str:
     return cleaned
 
 
+def _normalize_generated_heading(line: str) -> str | None:
+    """Map model heading variants to the canonical action-plan sections."""
+    normalized = line.strip().strip("*").strip()
+    normalized = re.sub(r"^#+\s*", "", normalized)
+    normalized = normalized.rstrip(":").strip().lower()
+
+    if normalized == "action plan":
+        return "# Action Plan"
+
+    week_match = re.fullmatch(r"week\s*([1-4])", normalized)
+    if week_match:
+        return f"## Week {week_match.group(1)}"
+
+    if normalized in {"sources", "source", "sources used", "source used"}:
+        return "## Sources Used"
+
+    return None
+
+
+def _strip_inline_source_text(line: str) -> str:
+    """Remove malformed inline source notes from a generated action line."""
+    return re.split(
+        r"\bsource(?:s)?\s+used\s*:?\s*\*?\*?",
+        line,
+        maxsplit=1,
+        flags=re.IGNORECASE,
+    )[0].strip()
+
+
+def _is_source_or_risk_leak(line: str) -> bool:
+    """Return True when a line is source/risk metadata rather than an action."""
+    normalized = line.strip().lower()
+    if not normalized:
+        return True
+
+    if re.match(r"^source(?:s)?\s+used\s*:?", normalized):
+        return True
+
+    if re.fullmatch(r"(attendance|academic|homework|behavior|engagement|family support)\s+risk", normalized):
+        return True
+
+    if " risk," in normalized or normalized.endswith(" risk"):
+        return True
+
+    return False
+
+
 def clean_action_plan_output(
     generated_text: str,
     student_name: str,
@@ -488,24 +536,27 @@ def clean_action_plan_output(
         if not line:
             continue
 
-        if line.startswith("#"):
-            normalized = line.rstrip(":")
-            if normalized.startswith("# Action Plan"):
+        normalized_heading = _normalize_generated_heading(line)
+        if normalized_heading:
+            if normalized_heading == "# Action Plan":
                 current_heading = "# Action Plan"
-            elif normalized in sections:
-                if normalized == "## Sources":
-                    normalized = "## Sources Used"
-                current_heading = normalized
-            else:
-                current_heading = None
+            elif normalized_heading in sections:
+                current_heading = normalized_heading
             continue
 
-        if current_heading in sections and line.startswith(("*", "-")):
+        if line.startswith("#"):
+            current_heading = None
+            continue
+
+        if current_heading in sections:
             bullet_text = line.lstrip("*- ").strip()
+            bullet_text = _strip_inline_source_text(bullet_text)
             if not bullet_text:
                 continue
             if bullet_text.lower().startswith(("action:", "metric:")):
                 bullet_text = bullet_text.split(":", 1)[1].strip()
+            if current_heading not in ("## Sources", "## Sources Used") and _is_source_or_risk_leak(bullet_text):
+                continue
             if bullet_text:
                 if current_heading not in ("## Sources", "## Sources Used"):
                     bullet_text = _clean_action_item(bullet_text)
