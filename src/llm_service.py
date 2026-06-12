@@ -22,6 +22,9 @@ TEMPERATURE = 0.2
 MAX_TOKENS = 1024
 N_CTX = 4096
 N_GPU_LAYERS = -1
+TOP_P = 0.9
+TOP_K = 40
+REPEAT_PENALTY = 1.12
 
 _LLM: Any | None = None
 logging.basicConfig(level=logging.INFO)
@@ -49,6 +52,7 @@ def get_llm() -> Any:
                 filename=MODEL_FILENAME,
                 n_gpu_layers=N_GPU_LAYERS,
                 n_ctx=N_CTX,
+                chat_format="chatml",
                 verbose=True,
             )
             load_time = time.perf_counter() - load_start
@@ -76,6 +80,9 @@ def generate_text(prompt: str) -> str:
         response = llm.create_chat_completion(
             messages=[{"role": "user", "content": prompt}],
             temperature=TEMPERATURE,
+            top_p=TOP_P,
+            top_k=TOP_K,
+            repeat_penalty=REPEAT_PENALTY,
             max_tokens=MAX_TOKENS,
         )
         generation_time = time.perf_counter() - generation_start

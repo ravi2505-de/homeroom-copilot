@@ -55,3 +55,31 @@ The expected successful llama.cpp GPU indicators in Hugging Face logs are:
 
 This report should be updated after the `ravi2505/llama-experiment` Space
 finishes building and a representative action plan generation is tested.
+
+## Output Quality Investigation
+
+After the first llama.cpp deployment, generated plans were fast but weaker than
+the Transformers version. Observed issues included repeated monitoring
+sentences, generic week-by-week plans, and weak use of retrieved evidence.
+
+### Findings
+
+| Area Checked | Finding |
+|---|---|
+| Prompt fidelity | The llama.cpp branch initially used the same `build_action_plan_prompt()` template as `transformers-zerogpu`. The prompt was not missing from the pipeline. |
+| Intervention evidence | The prompt formatter was only passing intervention rank, name, and category. It discarded summaries and expected benefits that were already available from retrieval. |
+| Source selection | Cleanup always fell back to all retrieved sources, which made `Sources Used` look like every intervention was used even when the model should select fewer. |
+| Chat formatting | llama.cpp was relying on automatic chat formatting. Qwen GGUF should use ChatML-style role formatting explicitly. |
+| Repetition control | The first llama.cpp generation settings did not include `top_p`, `top_k`, or `repeat_penalty`, which likely contributed to repeated monitoring language. |
+
+### Adjustments Made
+
+- Preserved the same public action-plan pipeline and output format.
+- Added intervention `summary` and `expected_benefits` back into the prompt
+  context so Qwen has concrete evidence to plan from.
+- Added stronger action instructions for specific educator tasks, measurable
+  supports, and week-to-week progression.
+- Set llama.cpp `chat_format="chatml"` for Qwen GGUF.
+- Added `top_p=0.9`, `top_k=40`, and `repeat_penalty=1.12`.
+- Updated source cleanup so `Sources Used` reflects selected/generated sources
+  when available, while preserving links back to retrieved evidence.

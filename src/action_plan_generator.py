@@ -56,7 +56,11 @@ def format_intervention_context(intervention: dict) -> str:
 
     return f"""Recommendation Rank: {rank}
 Intervention Name: {intervention.get("intervention_name", "Not provided")}
-Category: {intervention.get("category", "Not provided")}"""
+Category: {intervention.get("category", "Not provided")}
+Summary:
+{_format_list(intervention.get("summary"))}
+Expected Benefits:
+{_format_list(intervention.get("expected_benefits"))}"""
 
 
 def build_action_plan_prompt(
@@ -99,7 +103,7 @@ Internal risk context:
 Internal root cause context:
 {_format_list(root_causes)}
 
-Retrieved intervention names and categories:
+Retrieved intervention options:
 {intervention_context}
 
 The teacher already has access to all analysis.
@@ -167,10 +171,16 @@ Actions must:
 - Build logically from week to week.
 - Include follow-up activities.
 - Include monitoring activities.
+- Use details from the retrieved intervention summaries and expected benefits.
+- Translate intervention options into concrete educator tasks.
+- Include specific routines, check-ins, goals, or measurable classroom supports
+  when the retrieved evidence supports them.
 - Stay proportional to the student's overall risk level.
 - Treat stable trends as monitoring signals, not intervention triggers.
 - Treat "No incidents" as a positive behavior signal, not a behavior concern.
 - Treat positive teacher observations as strengths, not intervention triggers.
+- For High and Critical Risk students, do not repeat generic monitoring across
+  weeks. Each week must add, continue, review, or adjust a specific support.
 
 Do NOT:
 - Invent diagnoses.
@@ -186,22 +196,22 @@ REQUIRED OUTPUT FORMAT
 
 ## Week 1
 
-* Real action sentence
+* Specific educator action sentence
 * Optional second action sentence only if justified by risk level
 
 ## Week 2
 
-* Real action sentence
+* Specific educator action sentence that builds on Week 1
 * Optional second action sentence only if justified by risk level
 
 ## Week 3
 
-* Real action sentence
+* Specific educator action sentence focused on monitoring and adjustment
 * Optional second action sentence only if justified by risk level
 
 ## Week 4
 
-* Real action sentence
+* Specific educator action sentence focused on review and next steps
 * Optional second action sentence only if justified by risk level
 
 ## Sources Used
@@ -221,6 +231,13 @@ OUTPUT RULES
 - Do not use "Action:" labels.
 - Use a maximum of 1 action per week for Low Risk.
 - Use a maximum of 2 actions per week for Moderate, High, and Critical Risk.
+- Avoid repeating the same monitoring sentence across multiple weeks.
+- Use retrieved intervention details to make actions specific and personalized.
+- For family engagement, include a concrete communication goal or follow-up.
+- For tutoring or individualized instruction, include a concrete academic
+  support routine.
+- For after-school or active learning strategies, include a concrete
+  participation or engagement activity.
 - Keep actions concise.
 - Focus only on execution and implementation.
 - The plan should feel like a weekly roadmap for teachers.
@@ -378,7 +395,23 @@ def clean_action_plan_output(
         output_lines.extend(["", heading, ""])
         output_lines.extend(f"* {item}" for item in sections[heading][:2])
 
-    sources = source_names or sections["## Sources Used"] or sections["## Sources"]
+    generated_sources = sections["## Sources Used"] or sections["## Sources"]
+    if generated_sources:
+        linked_sources = []
+        for generated_source in generated_sources:
+            matched_source = next(
+                (
+                    source
+                    for source in source_names
+                    if generated_source.lower()
+                    in re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", source).lower()
+                ),
+                generated_source,
+            )
+            linked_sources.append(matched_source)
+        sources = linked_sources
+    else:
+        sources = source_names
     output_lines.extend(["", "## Sources Used", ""])
     output_lines.extend(f"* {source}" for source in sources[:5])
 
