@@ -1,6 +1,8 @@
+--extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu124
+--only-binary=llama-cpp-python
+
 gradio
 pandas
-spaces
-torch
-transformers>=4.37.0
-accelerate
+huggingface-hub
+psutil
+llama-cpp-python==0.3.28

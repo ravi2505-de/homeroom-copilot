@@ -1,89 +1,104 @@
-"""Local LLM service for generating text with Hugging Face Transformers.
+"""Local LLM service for generating text with llama.cpp.
 
-The model and tokenizer are loaded lazily and cached globally so repeated calls
-reuse the same Qwen instance instead of reloading model weights.
+The Qwen GGUF model is loaded lazily and cached globally so repeated calls
+reuse the same llama.cpp instance instead of reloading model weights.
 """
 
 from __future__ import annotations
 
 import logging
+import os
 import time
 import traceback
 from typing import Any
 
-import spaces
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+import psutil
+from llama_cpp import Llama
 
 
-MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct"
-TEMPERATURE = 0.2
-MAX_NEW_TOKENS = 1024
+MODEL_REPO_ID = "Qwen/Qwen2.5-1.5B-Instruct-GGUF"
+MODEL_FILENAME = "qwen2.5-1.5b-instruct-q4_k_m.gguf"
+TEMPERATURE = 0.35
+MAX_TOKENS = 1024
+N_CTX = 4096
+N_GPU_LAYERS = -1
+TOP_P = 0.9
+TOP_K = 40
+REPEAT_PENALTY = 1.18
 
-_TOKENIZER: Any | None = None
-_MODEL: Any | None = None
+_LLM: Any | None = None
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def get_llm() -> tuple[Any, Any]:
-    """Return the singleton tokenizer and model, loading them if needed."""
-    global _TOKENIZER, _MODEL
+def _memory_usage_mb() -> float:
+    """Return current process resident memory in megabytes."""
+    return psutil.Process(os.getpid()).memory_info().rss / (1024 * 1024)
 
-    if _TOKENIZER is None or _MODEL is None:
+
+def get_llm() -> Any:
+    """Return the singleton llama.cpp model, loading it if needed."""
+    global _LLM
+
+    if _LLM is None:
         try:
-            logger.info("Model loading start: %s", MODEL_NAME)
+            logger.info("Model loading start: %s / %s", MODEL_REPO_ID, MODEL_FILENAME)
+            memory_before = _memory_usage_mb()
+            logger.info("Memory before model load: %.1f MB", memory_before)
+
             load_start = time.perf_counter()
-
-            _TOKENIZER = AutoTokenizer.from_pretrained(MODEL_NAME)
-            _MODEL = AutoModelForCausalLM.from_pretrained(
-                MODEL_NAME,
-                torch_dtype="auto",
-                device_map="auto",
+            _LLM = Llama.from_pretrained(
+                repo_id=MODEL_REPO_ID,
+                filename=MODEL_FILENAME,
+                n_gpu_layers=N_GPU_LAYERS,
+                n_ctx=N_CTX,
+                chat_format="chatml",
+                verbose=True,
             )
-
             load_time = time.perf_counter() - load_start
+
+            memory_after = _memory_usage_mb()
             logger.info("Model loading complete in %.2f seconds", load_time)
+            logger.info("Memory after model load: %.1f MB", memory_after)
+            logger.info("Model load memory delta: %.1f MB", memory_after - memory_before)
         except Exception as error:
             traceback.print_exc()
             raise RuntimeError(f"Failed to load LLM model: {error}") from error
 
-    return _TOKENIZER, _MODEL
+    return _LLM
 
 
-@spaces.GPU
 def generate_text(prompt: str) -> str:
-    """Generate text from a prompt using the singleton Qwen model."""
+    """Generate text from a prompt using the singleton Qwen GGUF model."""
     try:
-        tokenizer, model = get_llm()
+        llm = get_llm()
         logger.info("Generation start")
         logger.info("Prompt length: %s characters", len(prompt))
 
+        memory_before = _memory_usage_mb()
         generation_start = time.perf_counter()
-        messages = [{"role": "user", "content": prompt}]
-        model_prompt = tokenizer.apply_chat_template(
-            messages,
-            add_generation_prompt=True,
-            tokenize=False,
-        )
-        inputs = tokenizer(model_prompt, return_tensors="pt").to(model.device)
-
-        generated_ids = model.generate(
-            **inputs,
-            max_new_tokens=MAX_NEW_TOKENS,
+        response = llm.create_chat_completion(
+            messages=[{"role": "user", "content": prompt}],
             temperature=TEMPERATURE,
-            do_sample=False,
+            top_p=TOP_P,
+            top_k=TOP_K,
+            repeat_penalty=REPEAT_PENALTY,
+            max_tokens=MAX_TOKENS,
         )
+        generation_time = time.perf_counter() - generation_start
+        memory_after = _memory_usage_mb()
 
-        input_token_count = inputs["input_ids"].shape[-1]
-        new_token_ids = generated_ids[0][input_token_count:]
-        generated_text = tokenizer.decode(
-            new_token_ids,
-            skip_special_tokens=True,
-        )
+        logger.info("Generation complete in %.2f seconds", generation_time)
+        logger.info("Memory before generation: %.1f MB", memory_before)
+        logger.info("Memory after generation: %.1f MB", memory_after)
+        logger.info("Generation memory delta: %.1f MB", memory_after - memory_before)
 
-        total_generation_time = time.perf_counter() - generation_start
-        logger.info("Generation complete in %.2f seconds", total_generation_time)
-        return generated_text.strip()
+        choices = response.get("choices", [])
+        if not choices:
+            return ""
+
+        message = choices[0].get("message", {})
+        return str(message.get("content", "")).strip()
 
     except Exception as error:
         traceback.print_exc()

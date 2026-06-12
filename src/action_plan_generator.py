@@ -7,6 +7,7 @@ generation directly.
 
 from __future__ import annotations
 
+import logging
 import re
 from typing import Any
 
@@ -15,6 +16,58 @@ PROMPT_ROLE = (
     "You are an experienced school intervention specialist and student success "
     "coordinator."
 )
+
+
+def _implementation_guidance(intervention_name: str) -> list[str]:
+    """Return concrete implementation ideas for a retrieved intervention."""
+    normalized_name = intervention_name.lower()
+
+    if "continue monitoring" in normalized_name:
+        return [
+            "Review attendance, homework, engagement, and behavior records once per week.",
+            "Give brief positive feedback when the student maintains current performance.",
+            "Escalate only if a monitored indicator declines during the next reporting cycle.",
+        ]
+
+    if "family engagement" in normalized_name:
+        return [
+            "Schedule a family check-in and agree on one attendance or homework goal.",
+            "Set a weekly update routine so home and school use the same expectations.",
+            "Review progress with the family before adjusting supports.",
+        ]
+
+    if "mentoring" in normalized_name or "tutoring" in normalized_name:
+        return [
+            "Assign a mentor or tutor for a weekly check-in.",
+            "Use the session to review missing assignments and practice one priority skill.",
+            "Track whether the student completes agreed follow-up work before the next meeting.",
+        ]
+
+    if "individualized instruction" in normalized_name:
+        return [
+            "Identify one priority skill gap from recent classwork.",
+            "Provide a short targeted practice routine with clear success criteria.",
+            "Adjust instruction after reviewing the student's work sample or assessment result.",
+        ]
+
+    if "after-school" in normalized_name:
+        return [
+            "Connect the student with a structured after-school or lunch support opportunity.",
+            "Use the time for assignment completion, guided practice, or engagement-building activities.",
+            "Confirm attendance and follow through with the student after each support session.",
+        ]
+
+    if "active learning" in normalized_name:
+        return [
+            "Use a collaborative or problem-solving classroom activity tied to current coursework.",
+            "Assign a defined participation role so engagement is observable.",
+            "Review participation and adjust the activity structure the following week.",
+        ]
+
+    return [
+        "Convert this intervention into a specific school-based action.",
+        "Include a follow-up step and a simple way to monitor progress.",
+    ]
 
 
 def _format_list(value: Any) -> str:
@@ -53,10 +106,17 @@ def format_intervention_context(intervention: dict) -> str:
     knowledge base and leaves missing values clearly marked as not provided.
     """
     rank = intervention.get("recommendation_rank", "Not provided")
+    intervention_name = str(intervention.get("intervention_name", "Not provided"))
 
     return f"""Recommendation Rank: {rank}
-Intervention Name: {intervention.get("intervention_name", "Not provided")}
-Category: {intervention.get("category", "Not provided")}"""
+Intervention Name: {intervention_name}
+Category: {intervention.get("category", "Not provided")}
+Summary:
+{_format_list(intervention.get("summary"))}
+Expected Benefits:
+{_format_list(intervention.get("expected_benefits"))}
+Concrete Implementation Ideas:
+{_format_list(_implementation_guidance(intervention_name))}"""
 
 
 def build_action_plan_prompt(
@@ -99,7 +159,7 @@ Internal risk context:
 Internal root cause context:
 {_format_list(root_causes)}
 
-Retrieved intervention names and categories:
+Retrieved intervention options:
 {intervention_context}
 
 The teacher already has access to all analysis.
@@ -151,6 +211,7 @@ Moderate Risk:
 High Risk:
 - Structured intervention plan.
 - Multiple coordinated actions.
+- Use concrete routines, named staff actions, and measurable weekly targets.
 - Up to 2 actions per week.
 
 Critical Risk:
@@ -158,7 +219,8 @@ Critical Risk:
 - Immediate support actions.
 - Family-school coordination.
 - Weekly progress reviews.
-- Up to 2 actions per week.
+- Use concrete routines, named staff actions, and measurable weekly targets.
+- Exactly 2 substantive actions per week.
 
 ACTION RULES
 Actions must:
@@ -167,10 +229,35 @@ Actions must:
 - Build logically from week to week.
 - Include follow-up activities.
 - Include monitoring activities.
+- Use details from the retrieved intervention summaries and expected benefits.
+- Translate intervention options into concrete educator tasks.
+- Use the Concrete Implementation Ideas to create a schedule, but do not copy
+  them word-for-word.
+- Include specific routines, check-ins, goals, or measurable classroom supports
+  when the retrieved evidence supports them.
 - Stay proportional to the student's overall risk level.
 - Treat stable trends as monitoring signals, not intervention triggers.
 - Treat "No incidents" as a positive behavior signal, not a behavior concern.
 - Treat positive teacher observations as strengths, not intervention triggers.
+- For High and Critical Risk students, do not repeat generic monitoring across
+  weeks. Each week must add, continue, review, or adjust a specific support.
+- Every action must include at least one concrete detail such as who will act,
+  what routine will be used, what goal will be set, or how progress will be
+  checked.
+- For High and Critical Risk students, include measurable targets when
+  appropriate, such as assignment completion percentage, on-time attendance,
+  tardiness reduction, daily participation, or weekly behavior goals.
+- For High and Critical Risk students, name how the retrieved intervention will
+  be implemented, such as a phone call, weekly tutoring routine, lunch support
+  block, targeted skill practice, participation role, or weekly data review.
+- Prefer specific teacher-facing actions over broad phrases like "monitor
+  engagement", "adjust supports", "review progress", or "schedule a family
+  check-in".
+- Every weekly bullet must start with an educator action verb such as Conduct,
+  Assign, Track, Create, Review, Connect, Provide, Identify, or Use.
+- Never write metadata labels inside Week 1-4, such as "Expected Benefit:",
+  "Summary:", "Concrete Implementation Ideas:", "Recommendation Rank:", or
+  "Source Used:".
 
 Do NOT:
 - Invent diagnoses.
@@ -179,6 +266,9 @@ Do NOT:
 - Invent counseling plans.
 - Invent external services.
 - Invent programs that were not retrieved.
+- Copy intervention summaries as action items.
+- Write generic actions such as "Continue monitoring" unless the action also
+  names what will be monitored and how the teacher will respond.
 
 REQUIRED OUTPUT FORMAT
 
@@ -186,22 +276,22 @@ REQUIRED OUTPUT FORMAT
 
 ## Week 1
 
-* Real action sentence
+* Specific educator action sentence
 * Optional second action sentence only if justified by risk level
 
 ## Week 2
 
-* Real action sentence
+* Specific educator action sentence that builds on Week 1
 * Optional second action sentence only if justified by risk level
 
 ## Week 3
 
-* Real action sentence
+* Specific educator action sentence focused on monitoring and adjustment
 * Optional second action sentence only if justified by risk level
 
 ## Week 4
 
-* Real action sentence
+* Specific educator action sentence focused on review and next steps
 * Optional second action sentence only if justified by risk level
 
 ## Sources Used
@@ -216,15 +306,70 @@ OUTPUT RULES
 - Do not generate assessments.
 - Do not generate rationale sections.
 - Do not explain intervention selection.
+- Do not write "Source Used" or "Sources Used" inside Week 1-4.
+- Do not write "Expected Benefit", "Summary", "Concrete Implementation Ideas",
+  or other intervention metadata labels inside Week 1-4.
 - Sources Used must contain only intervention names actually used in the plan.
 - The Week sections must contain action sentences, not intervention names.
 - Do not use "Action:" labels.
 - Use a maximum of 1 action per week for Low Risk.
-- Use a maximum of 2 actions per week for Moderate, High, and Critical Risk.
+- Use a maximum of 2 actions per week for Moderate and High Risk.
+- Use exactly 2 substantive actions per week for Critical Risk.
+- Avoid repeating the same monitoring sentence across multiple weeks.
+- Use retrieved intervention details to make actions specific and personalized.
+- Do not start an action with the intervention name.
+- Do not write only a strategy label such as "Continue Monitoring",
+  "Family Engagement", "Mentoring/Tutoring", or "Active Learning".
+- For family engagement, include a concrete communication goal or follow-up.
+- For tutoring or individualized instruction, include a concrete academic
+  support routine.
+- For after-school or active learning strategies, include a concrete
+  participation or engagement activity.
+- For monitoring, name the exact indicator to track, how often it will be
+  checked, and what response the teacher will take.
+- For goals, use practical school targets when possible, such as "complete 80%
+  of assignments", "attend all classes on time this week", "participate in one
+  classroom activity per day", or "reduce classroom disruptions this week".
 - Keep actions concise.
 - Focus only on execution and implementation.
 - The plan should feel like a weekly roadmap for teachers.
-- The intensity of the plan must match the student's overall risk level."""
+- The intensity of the plan must match the student's overall risk level.
+
+STYLE TARGET
+Weak:
+* Establish regular communication with parents or guardians.
+
+Better:
+* Schedule a 15-minute family check-in to set one attendance or homework goal
+  and agree on a weekly update routine.
+
+Weak:
+* Provide one-to-one mentoring or tutoring support.
+
+Better:
+* Assign a mentor or tutor to review missing assignments weekly and practice
+  one priority skill before the next progress check.
+
+Weak:
+* Monitor engagement.
+
+Better:
+* Track participation in class discussions and assignment completion each day,
+  then document any improvement or decline during the Friday progress check.
+
+Weak:
+* Adjust supports.
+
+Better:
+* Use the Friday progress data to decide whether to continue the tutoring
+  routine, add one lunch support block, or revise the homework goal.
+
+Weak:
+* Schedule a family check-in.
+
+Better:
+* Conduct a 10-15 minute family phone call and agree on one attendance or
+  homework goal for the following week."""
 
 
 def _clean_action_item(text: str) -> str:
@@ -232,6 +377,46 @@ def _clean_action_item(text: str) -> str:
     cleaned = text.strip()
 
     phrase_replacements = [
+        (
+            r"^continue monitoring and positive reinforcement\.?",
+            "Review attendance, homework, engagement, and behavior records, "
+            "then give brief positive feedback for maintained progress.",
+        ),
+        (
+            r"^continue monitoring, maintenance, and positive reinforcement\.?",
+            "Review weekly indicators and reinforce the strongest classroom "
+            "habit the student maintained.",
+        ),
+        (
+            r"^continue monitoring\.?",
+            "Review the student's weekly indicators and respond only if a "
+            "new concern appears.",
+        ),
+        (
+            r"^establish regular communication with parents or guardians\.?",
+            "Schedule a 15-minute family check-in to set one attendance or "
+            "homework goal and agree on a weekly update routine.",
+        ),
+        (
+            r"^provide one-to-one mentoring or tutoring support\.?",
+            "Assign a mentor or tutor to review missing assignments weekly "
+            "and practice one priority academic skill.",
+        ),
+        (
+            r"^adapt instruction to individual student needs\.?",
+            "Identify one priority skill gap and provide a short targeted "
+            "practice routine with clear success criteria.",
+        ),
+        (
+            r"^increase student participation during learning\.?",
+            "Give the student a defined role in a collaborative activity so "
+            "participation can be observed and reinforced.",
+        ),
+        (
+            r"^provide .* with structured after-school learning opportunities\.?",
+            "Connect the student with a structured after-school support block "
+            "for assignment completion and guided practice.",
+        ),
         (
             r"\bto discuss (?:her|his|their) declining attendance and "
             r"academic performance\b",
@@ -320,10 +505,342 @@ def _clean_action_item(text: str) -> str:
     return cleaned
 
 
+def _normalize_generated_heading(line: str) -> str | None:
+    """Map model heading variants to the canonical action-plan sections."""
+    normalized = line.strip().strip("*").strip()
+    normalized = re.sub(r"^#+\s*", "", normalized)
+    normalized = normalized.rstrip(":").strip().lower()
+
+    if normalized == "action plan":
+        return "# Action Plan"
+
+    week_match = re.fullmatch(r"week\s*([1-4])", normalized)
+    if week_match:
+        return f"## Week {week_match.group(1)}"
+
+    if normalized in {"sources", "source", "sources used", "source used"}:
+        return "## Sources Used"
+
+    return None
+
+
+def _strip_inline_source_text(line: str) -> str:
+    """Remove malformed inline source notes from a generated action line."""
+    return re.split(
+        r"\bsource(?:s)?\s+used\s*:?\s*\*?\*?",
+        line,
+        maxsplit=1,
+        flags=re.IGNORECASE,
+    )[0].strip()
+
+
+def _is_source_or_risk_leak(line: str) -> bool:
+    """Return True when a line is source/risk metadata rather than an action."""
+    normalized = line.strip().lower()
+    if not normalized:
+        return True
+
+    if re.match(r"^source(?:s)?\s+used\s*:?", normalized):
+        return True
+
+    if re.fullmatch(r"(attendance|academic|homework|behavior|engagement|family support)\s+risk", normalized):
+        return True
+
+    if " risk," in normalized or normalized.endswith(" risk"):
+        return True
+
+    return False
+
+
+def _source_label(source: str) -> str:
+    """Return the display label from a plain or Markdown-linked source."""
+    text = source.strip().lstrip("*- ").strip()
+    markdown_match = re.fullmatch(r"\[([^\]]+)\]\([^)]+\)", text)
+    if markdown_match:
+        return markdown_match.group(1).strip()
+    return text
+
+
+def _normalize_source_label(source: str) -> str:
+    """Normalize a source label for exact source validation."""
+    label = _source_label(source)
+    return re.sub(r"\s+", " ", label).strip().lower()
+
+
+def _minimum_source_count(overall_risk: str) -> int:
+    """Return the minimum number of evidence sources to show by risk level."""
+    if overall_risk == "Critical":
+        return 3
+    if overall_risk == "High":
+        return 2
+    return 1
+
+
+def _infer_sources_from_actions(
+    actions: list[str],
+    valid_sources: dict[str, str],
+) -> list[str]:
+    """Infer valid evidence sources referenced by action wording."""
+    action_text = " ".join(actions).lower()
+    inferred: list[str] = []
+
+    source_cues = {
+        "family engagement": (
+            "family",
+            "parent",
+            "guardian",
+            "home and school",
+            "home-school",
+        ),
+        "mentoring/tutoring": (
+            "mentor",
+            "tutor",
+            "tutoring",
+            "priority skill",
+            "academic skill",
+            "missing assignment",
+        ),
+        "after-school opportunities": (
+            "after-school",
+            "after school",
+            "lunch support",
+            "support block",
+            "structured support",
+        ),
+        "individualized instruction": (
+            "individualized",
+            "skill gap",
+            "targeted practice",
+            "clear success criteria",
+            "adjust instruction",
+        ),
+        "active learning": (
+            "collaborative",
+            "problem-solving",
+            "participation role",
+            "classroom activity",
+            "learning activities",
+        ),
+        "continue monitoring": (
+            "monitor",
+            "positive feedback",
+            "positive reinforcement",
+            "review current indicators",
+        ),
+    }
+
+    for source_label, cues in source_cues.items():
+        matched_source = valid_sources.get(source_label)
+        if matched_source and any(cue in action_text for cue in cues):
+            inferred.append(matched_source)
+
+    return inferred
+
+
+def _is_monitoring_action(action: str) -> bool:
+    """Return True when an action is primarily monitoring-oriented."""
+    normalized = action.lower()
+    return any(
+        phrase in normalized
+        for phrase in (
+            "monitor",
+            "review progress",
+            "review attendance",
+            "review homework",
+            "review engagement",
+            "review behavior",
+            "review the student's weekly indicators",
+            "continue monitoring",
+            "check attendance",
+            "check homework",
+            "track",
+        )
+    )
+
+
+def _is_low_risk_action_allowed(action: str, valid_source_labels: set[str]) -> bool:
+    """Allow only maintenance-focused actions for low-risk students."""
+    normalized = action.lower()
+    rejected_terms = (
+        "tutor",
+        "tutoring",
+        "mentor",
+        "mentoring",
+        "escalat",
+        "intensive",
+        "counsel",
+        "after-school",
+        "after school",
+        "intervention",
+        "behavior support",
+        "support block",
+        "skill gap",
+        "missing assignments",
+    )
+    if any(term in normalized for term in rejected_terms):
+        return False
+
+    family_terms = ("family", "parent", "guardian")
+    has_family_source = "family engagement" in valid_source_labels
+    if any(term in normalized for term in family_terms) and not has_family_source:
+        return False
+
+    allowed_terms = (
+        "monitor",
+        "positive feedback",
+        "positive reinforcement",
+        "encourage",
+        "encouragement",
+        "check-in",
+        "check in",
+        "celebrate",
+        "progress",
+        "maintain",
+        "review",
+        "classroom",
+        "attendance",
+        "homework",
+        "engagement",
+        "behavior",
+        "family",
+        "parent",
+        "guardian",
+    )
+    return any(term in normalized for term in allowed_terms)
+
+
+def _fallback_action(overall_risk: str, week_number: int) -> str:
+    """Return a risk-appropriate fallback action for an empty week."""
+    low_risk_actions = {
+        1: "Review current indicators and reinforce the strongest positive classroom habit.",
+        2: "Continue monitoring progress and encourage consistent classroom participation.",
+        3: "Check for any new concerns and celebrate maintained attendance, homework, or engagement.",
+        4: "Review the month of progress and continue routine monitoring if performance remains stable.",
+    }
+    moderate_actions = {
+        1: "Review progress and confirm the targeted support routine for the week.",
+        2: "Check whether the current support is improving follow-through and adjust if needed.",
+        3: "Monitor progress indicators and refine the support strategy with the teacher team.",
+        4: "Review progress and decide whether to continue, reduce, or adjust support next month.",
+    }
+    high_actions = {
+        1: "Confirm the intervention routine and assign staff follow-up responsibilities.",
+        2: "Monitor intervention effectiveness and coordinate follow-up support.",
+        3: "Review progress data and adjust the intervention routine with the support team.",
+        4: "Evaluate intervention outcomes and set next-month support priorities.",
+    }
+    critical_actions = {
+        1: "Coordinate immediate support actions and confirm family-school communication steps.",
+        2: "Review weekly progress with school staff and adjust intensive supports as needed.",
+        3: "Check intervention follow-through and address barriers with the support team.",
+        4: "Conduct a formal review of intervention outcomes and determine next support steps.",
+    }
+
+    if overall_risk == "Low":
+        return low_risk_actions.get(week_number, low_risk_actions[4])
+    if overall_risk == "Moderate":
+        return moderate_actions.get(week_number, moderate_actions[4])
+    if overall_risk == "High":
+        return high_actions.get(week_number, high_actions[4])
+    if overall_risk == "Critical":
+        return critical_actions.get(week_number, critical_actions[4])
+    return moderate_actions.get(week_number, moderate_actions[4])
+
+
+def _supplemental_critical_action(week_number: int) -> str:
+    """Return a second concrete action for Critical-risk weeks."""
+    actions = {
+        1: (
+            "Assign a staff member to check attendance, homework completion, "
+            "and classroom participation by Friday and record one barrier to address."
+        ),
+        2: (
+            "Begin a weekly tutoring or lunch support routine focused on one "
+            "priority skill and one missing-assignment goal."
+        ),
+        3: (
+            "Use midweek progress data to revise the attendance or homework "
+            "goal and confirm the next family update."
+        ),
+        4: (
+            "Hold a 15-minute review with the support team to decide which "
+            "actions continue, change, or intensify next month."
+        ),
+    }
+    return actions.get(week_number, actions[4])
+
+
+def _select_week_actions(
+    actions: list[str],
+    overall_risk: str,
+    valid_source_labels: set[str],
+    seen_monitoring_actions: set[str],
+    seen_actions: set[str],
+    week_number: int,
+) -> list[str]:
+    """Select risk-appropriate, non-repetitive actions for one week."""
+    max_actions = 1 if overall_risk == "Low" else 2
+    selected: list[str] = []
+    monitoring_candidates: list[str] = []
+
+    for action in actions:
+        action = action.strip()
+        if not action:
+            continue
+
+        if overall_risk == "Low" and not _is_low_risk_action_allowed(
+            action,
+            valid_source_labels,
+        ):
+            continue
+
+        normalized = re.sub(r"\s+", " ", action.lower())
+        if normalized in seen_actions:
+            continue
+
+        is_monitoring = _is_monitoring_action(action)
+        if is_monitoring:
+            if normalized in seen_monitoring_actions:
+                continue
+            monitoring_candidates.append(action)
+            continue
+
+        selected.append(action)
+        seen_actions.add(normalized)
+        if len(selected) >= max_actions:
+            break
+
+    if len(selected) < max_actions:
+        for action in monitoring_candidates:
+            selected.append(action)
+            normalized = re.sub(r"\s+", " ", action.lower())
+            seen_actions.add(normalized)
+            seen_monitoring_actions.add(normalized)
+            if len(selected) >= max_actions:
+                break
+
+    if not selected:
+        fallback = _fallback_action(overall_risk, week_number)
+        selected.append(fallback)
+        seen_actions.add(re.sub(r"\s+", " ", fallback.lower()))
+        if _is_monitoring_action(fallback):
+            seen_monitoring_actions.add(re.sub(r"\s+", " ", fallback.lower()))
+
+    if overall_risk == "Critical" and len(selected) < max_actions:
+        supplemental = _supplemental_critical_action(week_number)
+        normalized = re.sub(r"\s+", " ", supplemental.lower())
+        if normalized not in seen_actions:
+            selected.append(supplemental)
+            seen_actions.add(normalized)
+
+    return selected[:max_actions]
+
+
 def clean_action_plan_output(
     generated_text: str,
     student_name: str,
     source_names: list[str],
+    overall_risk: str,
 ) -> str:
     """Return only the UI-ready action-plan sections.
 
@@ -343,6 +860,13 @@ def clean_action_plan_output(
     exact_title = "# Action Plan"
     lines = generated_text.splitlines()
     sections: dict[str, list[str]] = {heading: [] for heading in allowed_headings[1:]}
+    valid_sources = {
+        _normalize_source_label(source): source
+        for source in source_names
+        if _normalize_source_label(source)
+    }
+    valid_source_labels = set(valid_sources)
+    source_validation_failures = 0
 
     current_heading: str | None = None
     for raw_line in lines:
@@ -350,36 +874,108 @@ def clean_action_plan_output(
         if not line:
             continue
 
-        if line.startswith("#"):
-            normalized = line.rstrip(":")
-            if normalized.startswith("# Action Plan"):
+        normalized_heading = _normalize_generated_heading(line)
+        if normalized_heading:
+            if normalized_heading == "# Action Plan":
                 current_heading = "# Action Plan"
-            elif normalized in sections:
-                if normalized == "## Sources":
-                    normalized = "## Sources Used"
-                current_heading = normalized
-            else:
-                current_heading = None
+            elif normalized_heading in sections:
+                current_heading = normalized_heading
             continue
 
-        if current_heading in sections and line.startswith(("*", "-")):
+        if line.startswith("#"):
+            current_heading = None
+            continue
+
+        if current_heading in sections:
             bullet_text = line.lstrip("*- ").strip()
+            bullet_text = _strip_inline_source_text(bullet_text)
             if not bullet_text:
                 continue
             if bullet_text.lower().startswith(("action:", "metric:")):
                 bullet_text = bullet_text.split(":", 1)[1].strip()
+            if current_heading not in ("## Sources", "## Sources Used") and _is_source_or_risk_leak(bullet_text):
+                continue
             if bullet_text:
                 if current_heading not in ("## Sources", "## Sources Used"):
                     bullet_text = _clean_action_item(bullet_text)
                 sections[current_heading].append(bullet_text)
 
     output_lines = [exact_title]
-    for heading in ["## Week 1", "## Week 2", "## Week 3", "## Week 4"]:
+    seen_monitoring_actions: set[str] = set()
+    seen_actions: set[str] = set()
+    empty_weeks: list[str] = []
+    selected_actions_by_week: list[str] = []
+    for week_number, heading in enumerate(
+        ["## Week 1", "## Week 2", "## Week 3", "## Week 4"],
+        start=1,
+    ):
+        selected_actions = _select_week_actions(
+            sections[heading],
+            overall_risk,
+            valid_source_labels,
+            seen_monitoring_actions,
+            seen_actions,
+            week_number,
+        )
+        if not sections[heading]:
+            empty_weeks.append(heading.replace("## ", ""))
+        selected_actions_by_week.extend(selected_actions)
         output_lines.extend(["", heading, ""])
-        output_lines.extend(f"* {item}" for item in sections[heading][:2])
+        output_lines.extend(f"* {item}" for item in selected_actions)
 
-    sources = source_names or sections["## Sources Used"] or sections["## Sources"]
+    generated_sources = sections["## Sources Used"] or sections["## Sources"]
+    if generated_sources:
+        sources = []
+        for generated_source in generated_sources:
+            normalized_source = _normalize_source_label(generated_source)
+            matched_source = valid_sources.get(normalized_source)
+            if matched_source:
+                sources.append(matched_source)
+            else:
+                source_validation_failures += 1
+    else:
+        sources = source_names
+
+    inferred_sources = _infer_sources_from_actions(
+        selected_actions_by_week,
+        valid_sources,
+    )
+    sources.extend(inferred_sources)
+
+    if not sources and overall_risk == "Low":
+        sources = [valid_sources.get("continue monitoring", "Continue Monitoring")]
+    elif not sources:
+        sources = source_names
+
+    deduped_sources = []
+    seen_sources = set()
+    for source in sources:
+        normalized_source = _normalize_source_label(source)
+        if normalized_source and normalized_source not in seen_sources:
+            deduped_sources.append(source)
+            seen_sources.add(normalized_source)
+    sources = deduped_sources
+
+    minimum_source_count = _minimum_source_count(overall_risk)
+    if len(sources) < minimum_source_count and overall_risk in {"High", "Critical"}:
+        for source in source_names:
+            normalized_source = _normalize_source_label(source)
+            if normalized_source and normalized_source not in seen_sources:
+                sources.append(source)
+                seen_sources.add(normalized_source)
+            if len(sources) >= minimum_source_count:
+                break
+
     output_lines.extend(["", "## Sources Used", ""])
     output_lines.extend(f"* {source}" for source in sources[:5])
+
+    logging.getLogger(__name__).info(
+        "Action plan cleanup metrics: weeks_present=%s empty_weeks=%s "
+        "source_count=%s source_validation_failures=%s",
+        4 - len(empty_weeks),
+        empty_weeks,
+        len(sources),
+        source_validation_failures,
+    )
 
     return "\n".join(output_lines).strip()
