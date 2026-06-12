@@ -253,6 +253,11 @@ Actions must:
 - Prefer specific teacher-facing actions over broad phrases like "monitor
   engagement", "adjust supports", "review progress", or "schedule a family
   check-in".
+- Every weekly bullet must start with an educator action verb such as Conduct,
+  Assign, Track, Create, Review, Connect, Provide, Identify, or Use.
+- Never write metadata labels inside Week 1-4, such as "Expected Benefit:",
+  "Summary:", "Concrete Implementation Ideas:", "Recommendation Rank:", or
+  "Source Used:".
 
 Do NOT:
 - Invent diagnoses.
@@ -302,6 +307,8 @@ OUTPUT RULES
 - Do not generate rationale sections.
 - Do not explain intervention selection.
 - Do not write "Source Used" or "Sources Used" inside Week 1-4.
+- Do not write "Expected Benefit", "Summary", "Concrete Implementation Ideas",
+  or other intervention metadata labels inside Week 1-4.
 - Sources Used must contain only intervention names actually used in the plan.
 - The Week sections must contain action sentences, not intervention names.
 - Do not use "Action:" labels.
