@@ -220,7 +220,7 @@ Critical Risk:
 - Family-school coordination.
 - Weekly progress reviews.
 - Use concrete routines, named staff actions, and measurable weekly targets.
-- Up to 2 actions per week.
+- Exactly 2 substantive actions per week.
 
 ACTION RULES
 Actions must:
@@ -313,7 +313,8 @@ OUTPUT RULES
 - The Week sections must contain action sentences, not intervention names.
 - Do not use "Action:" labels.
 - Use a maximum of 1 action per week for Low Risk.
-- Use a maximum of 2 actions per week for Moderate, High, and Critical Risk.
+- Use a maximum of 2 actions per week for Moderate and High Risk.
+- Use exactly 2 substantive actions per week for Critical Risk.
 - Avoid repeating the same monitoring sentence across multiple weeks.
 - Use retrieved intervention details to make actions specific and personalized.
 - Do not start an action with the intervention name.
@@ -746,6 +747,29 @@ def _fallback_action(overall_risk: str, week_number: int) -> str:
     return moderate_actions.get(week_number, moderate_actions[4])
 
 
+def _supplemental_critical_action(week_number: int) -> str:
+    """Return a second concrete action for Critical-risk weeks."""
+    actions = {
+        1: (
+            "Assign a staff member to check attendance, homework completion, "
+            "and classroom participation by Friday and record one barrier to address."
+        ),
+        2: (
+            "Begin a weekly tutoring or lunch support routine focused on one "
+            "priority skill and one missing-assignment goal."
+        ),
+        3: (
+            "Use midweek progress data to revise the attendance or homework "
+            "goal and confirm the next family update."
+        ),
+        4: (
+            "Hold a 15-minute review with the support team to decide which "
+            "actions continue, change, or intensify next month."
+        ),
+    }
+    return actions.get(week_number, actions[4])
+
+
 def _select_week_actions(
     actions: list[str],
     overall_risk: str,
@@ -801,6 +825,13 @@ def _select_week_actions(
         seen_actions.add(re.sub(r"\s+", " ", fallback.lower()))
         if _is_monitoring_action(fallback):
             seen_monitoring_actions.add(re.sub(r"\s+", " ", fallback.lower()))
+
+    if overall_risk == "Critical" and len(selected) < max_actions:
+        supplemental = _supplemental_critical_action(week_number)
+        normalized = re.sub(r"\s+", " ", supplemental.lower())
+        if normalized not in seen_actions:
+            selected.append(supplemental)
+            seen_actions.add(normalized)
 
     return selected[:max_actions]
 
