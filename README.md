@@ -9,22 +9,8 @@ python_version: "3.11"
 app_file: app.py
 pinned: false
 license: mit
-short_description: AI-powered student risk assessment, root cause analysis, and intervention planning for educators.
+short_description: AI copilot for student intervention planning.
 ---
----
-
-title: Homeroom Copilot
-emoji: 🎓
-colorFrom: blue
-colorTo: indigo
-sdk: gradio
-sdk_version: 6.17.3
-python_version: "3.11"
-app_file: app.py
-pinned: false
-license: mit
-short_description: AI-powered student risk assessment, root cause analysis, and intervention planning for educators.
---------------------------------------------------------------------------------------------------------------------
 
 # 🎓 Homeroom Copilot
 
