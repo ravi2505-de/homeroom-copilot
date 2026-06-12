@@ -17,6 +17,58 @@ PROMPT_ROLE = (
 )
 
 
+def _implementation_guidance(intervention_name: str) -> list[str]:
+    """Return concrete implementation ideas for a retrieved intervention."""
+    normalized_name = intervention_name.lower()
+
+    if "continue monitoring" in normalized_name:
+        return [
+            "Review attendance, homework, engagement, and behavior records once per week.",
+            "Give brief positive feedback when the student maintains current performance.",
+            "Escalate only if a monitored indicator declines during the next reporting cycle.",
+        ]
+
+    if "family engagement" in normalized_name:
+        return [
+            "Schedule a family check-in and agree on one attendance or homework goal.",
+            "Set a weekly update routine so home and school use the same expectations.",
+            "Review progress with the family before adjusting supports.",
+        ]
+
+    if "mentoring" in normalized_name or "tutoring" in normalized_name:
+        return [
+            "Assign a mentor or tutor for a weekly check-in.",
+            "Use the session to review missing assignments and practice one priority skill.",
+            "Track whether the student completes agreed follow-up work before the next meeting.",
+        ]
+
+    if "individualized instruction" in normalized_name:
+        return [
+            "Identify one priority skill gap from recent classwork.",
+            "Provide a short targeted practice routine with clear success criteria.",
+            "Adjust instruction after reviewing the student's work sample or assessment result.",
+        ]
+
+    if "after-school" in normalized_name:
+        return [
+            "Connect the student with a structured after-school or lunch support opportunity.",
+            "Use the time for assignment completion, guided practice, or engagement-building activities.",
+            "Confirm attendance and follow through with the student after each support session.",
+        ]
+
+    if "active learning" in normalized_name:
+        return [
+            "Use a collaborative or problem-solving classroom activity tied to current coursework.",
+            "Assign a defined participation role so engagement is observable.",
+            "Review participation and adjust the activity structure the following week.",
+        ]
+
+    return [
+        "Convert this intervention into a specific school-based action.",
+        "Include a follow-up step and a simple way to monitor progress.",
+    ]
+
+
 def _format_list(value: Any) -> str:
     """Format a scalar or list-like value as prompt-friendly bullet points."""
     if value is None:
@@ -53,14 +105,17 @@ def format_intervention_context(intervention: dict) -> str:
     knowledge base and leaves missing values clearly marked as not provided.
     """
     rank = intervention.get("recommendation_rank", "Not provided")
+    intervention_name = str(intervention.get("intervention_name", "Not provided"))
 
     return f"""Recommendation Rank: {rank}
-Intervention Name: {intervention.get("intervention_name", "Not provided")}
+Intervention Name: {intervention_name}
 Category: {intervention.get("category", "Not provided")}
 Summary:
 {_format_list(intervention.get("summary"))}
 Expected Benefits:
-{_format_list(intervention.get("expected_benefits"))}"""
+{_format_list(intervention.get("expected_benefits"))}
+Concrete Implementation Ideas:
+{_format_list(_implementation_guidance(intervention_name))}"""
 
 
 def build_action_plan_prompt(
@@ -173,6 +228,8 @@ Actions must:
 - Include monitoring activities.
 - Use details from the retrieved intervention summaries and expected benefits.
 - Translate intervention options into concrete educator tasks.
+- Use the Concrete Implementation Ideas to create a schedule, but do not copy
+  them word-for-word.
 - Include specific routines, check-ins, goals, or measurable classroom supports
   when the retrieved evidence supports them.
 - Stay proportional to the student's overall risk level.
@@ -181,6 +238,9 @@ Actions must:
 - Treat positive teacher observations as strengths, not intervention triggers.
 - For High and Critical Risk students, do not repeat generic monitoring across
   weeks. Each week must add, continue, review, or adjust a specific support.
+- Every action must include at least one concrete detail such as who will act,
+  what routine will be used, what goal will be set, or how progress will be
+  checked.
 
 Do NOT:
 - Invent diagnoses.
@@ -189,6 +249,9 @@ Do NOT:
 - Invent counseling plans.
 - Invent external services.
 - Invent programs that were not retrieved.
+- Copy intervention summaries as action items.
+- Write generic actions such as "Continue monitoring" unless the action also
+  names what will be monitored and how the teacher will respond.
 
 REQUIRED OUTPUT FORMAT
 
@@ -233,6 +296,9 @@ OUTPUT RULES
 - Use a maximum of 2 actions per week for Moderate, High, and Critical Risk.
 - Avoid repeating the same monitoring sentence across multiple weeks.
 - Use retrieved intervention details to make actions specific and personalized.
+- Do not start an action with the intervention name.
+- Do not write only a strategy label such as "Continue Monitoring",
+  "Family Engagement", "Mentoring/Tutoring", or "Active Learning".
 - For family engagement, include a concrete communication goal or follow-up.
 - For tutoring or individualized instruction, include a concrete academic
   support routine.
@@ -241,7 +307,22 @@ OUTPUT RULES
 - Keep actions concise.
 - Focus only on execution and implementation.
 - The plan should feel like a weekly roadmap for teachers.
-- The intensity of the plan must match the student's overall risk level."""
+- The intensity of the plan must match the student's overall risk level.
+
+STYLE TARGET
+Weak:
+* Establish regular communication with parents or guardians.
+
+Better:
+* Schedule a 15-minute family check-in to set one attendance or homework goal
+  and agree on a weekly update routine.
+
+Weak:
+* Provide one-to-one mentoring or tutoring support.
+
+Better:
+* Assign a mentor or tutor to review missing assignments weekly and practice
+  one priority skill before the next progress check."""
 
 
 def _clean_action_item(text: str) -> str:
@@ -249,6 +330,46 @@ def _clean_action_item(text: str) -> str:
     cleaned = text.strip()
 
     phrase_replacements = [
+        (
+            r"^continue monitoring and positive reinforcement\.?",
+            "Review attendance, homework, engagement, and behavior records, "
+            "then give brief positive feedback for maintained progress.",
+        ),
+        (
+            r"^continue monitoring, maintenance, and positive reinforcement\.?",
+            "Review weekly indicators and reinforce the strongest classroom "
+            "habit the student maintained.",
+        ),
+        (
+            r"^continue monitoring\.?",
+            "Review the student's weekly indicators and respond only if a "
+            "new concern appears.",
+        ),
+        (
+            r"^establish regular communication with parents or guardians\.?",
+            "Schedule a 15-minute family check-in to set one attendance or "
+            "homework goal and agree on a weekly update routine.",
+        ),
+        (
+            r"^provide one-to-one mentoring or tutoring support\.?",
+            "Assign a mentor or tutor to review missing assignments weekly "
+            "and practice one priority academic skill.",
+        ),
+        (
+            r"^adapt instruction to individual student needs\.?",
+            "Identify one priority skill gap and provide a short targeted "
+            "practice routine with clear success criteria.",
+        ),
+        (
+            r"^increase student participation during learning\.?",
+            "Give the student a defined role in a collaborative activity so "
+            "participation can be observed and reinforced.",
+        ),
+        (
+            r"^provide .* with structured after-school learning opportunities\.?",
+            "Connect the student with a structured after-school support block "
+            "for assignment completion and guided practice.",
+        ),
         (
             r"\bto discuss (?:her|his|their) declining attendance and "
             r"academic performance\b",

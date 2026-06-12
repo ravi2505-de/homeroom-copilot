@@ -83,3 +83,25 @@ sentences, generic week-by-week plans, and weak use of retrieved evidence.
 - Added `top_p=0.9`, `top_k=40`, and `repeat_penalty=1.12`.
 - Updated source cleanup so `Sources Used` reflects selected/generated sources
   when available, while preserving links back to retrieved evidence.
+
+## Second Quality Pass
+
+User comparison against the Transformers baseline showed that llama.cpp was
+still producing actions that were too generic, such as:
+
+- "Establish regular communication with parents or guardians."
+- "Provide one-to-one mentoring or tutoring support."
+- "Continue Monitoring."
+
+These were valid intervention labels but not implementation plans.
+
+Additional corrections:
+
+- Added concrete implementation ideas for each retrieved intervention type.
+- Added weak-vs-better examples directly in the prompt.
+- Added rules requiring each action to include a concrete routine, goal,
+  actor, or progress-check method.
+- Added cleanup replacements for the exact weak phrases observed in llama.cpp
+  outputs.
+- Increased llama.cpp temperature from `0.2` to `0.35`.
+- Increased repeat penalty from `1.12` to `1.18`.

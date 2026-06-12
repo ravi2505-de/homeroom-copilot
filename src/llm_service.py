@@ -18,13 +18,13 @@ from llama_cpp import Llama
 
 MODEL_REPO_ID = "Qwen/Qwen2.5-1.5B-Instruct-GGUF"
 MODEL_FILENAME = "qwen2.5-1.5b-instruct-q4_k_m.gguf"
-TEMPERATURE = 0.2
+TEMPERATURE = 0.35
 MAX_TOKENS = 1024
 N_CTX = 4096
 N_GPU_LAYERS = -1
 TOP_P = 0.9
 TOP_K = 40
-REPEAT_PENALTY = 1.12
+REPEAT_PENALTY = 1.18
 
 _LLM: Any | None = None
 logging.basicConfig(level=logging.INFO)
