@@ -1651,7 +1651,6 @@ def generate_ai_action_plan(student_record: pd.Series) -> str:
             format_action_plan_source(intervention)
             for intervention in prompt_interventions
         ],
-        overall_risk=str(risk_profile["overall_risk"]),
     )
     logger.info("Action plan generated successfully.")
     return action_plan

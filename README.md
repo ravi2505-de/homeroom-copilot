@@ -7,7 +7,6 @@ sdk: gradio
 sdk_version: 6.17.3
 python_version: "3.11"
 app_file: app.py
-suggested_hardware: t4-small
 pinned: false
 license: mit
 short_description: AI copilot for student intervention planning.
@@ -21,17 +20,13 @@ Homeroom Copilot helps educators identify at-risk students, understand the under
 
 Built for the **Hugging Face Build Small Hackathon** using **Qwen 2.5 1.5B Instruct**.
 
-This experiment branch runs the Action Plan Generator with **llama.cpp**,
-`llama-cpp-python`, CUDA offload, and the
-`Qwen/Qwen2.5-1.5B-Instruct-GGUF` Q4_K_M model.
-
 ---
 
 ## 🚀 Links
 
 ### Live Demo
 
-https://huggingface.co/spaces/ravi2505/llama-experiment
+https://huggingface.co/spaces/build-small-hackathon/homeroom-copilot
 
 ### Technical Article
 
@@ -174,9 +169,7 @@ AI Action Plan Generation
 ### Backend
 
 * Python
-* llama.cpp
-* llama-cpp-python
-* Qwen2.5 1.5B Instruct GGUF
+* Transformers
 
 ### Deployment
 
