@@ -7,6 +7,7 @@ generation directly.
 
 from __future__ import annotations
 
+import logging
 import re
 from typing import Any
 
@@ -506,10 +507,195 @@ def _is_source_or_risk_leak(line: str) -> bool:
     return False
 
 
+def _source_label(source: str) -> str:
+    """Return the display label from a plain or Markdown-linked source."""
+    text = source.strip().lstrip("*- ").strip()
+    markdown_match = re.fullmatch(r"\[([^\]]+)\]\([^)]+\)", text)
+    if markdown_match:
+        return markdown_match.group(1).strip()
+    return text
+
+
+def _normalize_source_label(source: str) -> str:
+    """Normalize a source label for exact source validation."""
+    label = _source_label(source)
+    return re.sub(r"\s+", " ", label).strip().lower()
+
+
+def _is_monitoring_action(action: str) -> bool:
+    """Return True when an action is primarily monitoring-oriented."""
+    normalized = action.lower()
+    return any(
+        phrase in normalized
+        for phrase in (
+            "monitor",
+            "review progress",
+            "review attendance",
+            "review homework",
+            "review engagement",
+            "review behavior",
+            "review the student's weekly indicators",
+            "continue monitoring",
+            "check attendance",
+            "check homework",
+            "track",
+        )
+    )
+
+
+def _is_low_risk_action_allowed(action: str, valid_source_labels: set[str]) -> bool:
+    """Allow only maintenance-focused actions for low-risk students."""
+    normalized = action.lower()
+    rejected_terms = (
+        "tutor",
+        "tutoring",
+        "mentor",
+        "mentoring",
+        "escalat",
+        "intensive",
+        "counsel",
+        "after-school",
+        "after school",
+        "intervention",
+        "behavior support",
+        "support block",
+        "skill gap",
+        "missing assignments",
+    )
+    if any(term in normalized for term in rejected_terms):
+        return False
+
+    family_terms = ("family", "parent", "guardian")
+    has_family_source = "family engagement" in valid_source_labels
+    if any(term in normalized for term in family_terms) and not has_family_source:
+        return False
+
+    allowed_terms = (
+        "monitor",
+        "positive feedback",
+        "positive reinforcement",
+        "encourage",
+        "encouragement",
+        "check-in",
+        "check in",
+        "celebrate",
+        "progress",
+        "maintain",
+        "review",
+        "classroom",
+        "attendance",
+        "homework",
+        "engagement",
+        "behavior",
+        "family",
+        "parent",
+        "guardian",
+    )
+    return any(term in normalized for term in allowed_terms)
+
+
+def _fallback_action(overall_risk: str, week_number: int) -> str:
+    """Return a risk-appropriate fallback action for an empty week."""
+    low_risk_actions = {
+        1: "Review current indicators and reinforce the strongest positive classroom habit.",
+        2: "Continue monitoring progress and encourage consistent classroom participation.",
+        3: "Check for any new concerns and celebrate maintained attendance, homework, or engagement.",
+        4: "Review the month of progress and continue routine monitoring if performance remains stable.",
+    }
+    moderate_actions = {
+        1: "Review progress and confirm the targeted support routine for the week.",
+        2: "Check whether the current support is improving follow-through and adjust if needed.",
+        3: "Monitor progress indicators and refine the support strategy with the teacher team.",
+        4: "Review progress and decide whether to continue, reduce, or adjust support next month.",
+    }
+    high_actions = {
+        1: "Confirm the intervention routine and assign staff follow-up responsibilities.",
+        2: "Monitor intervention effectiveness and coordinate follow-up support.",
+        3: "Review progress data and adjust the intervention routine with the support team.",
+        4: "Evaluate intervention outcomes and set next-month support priorities.",
+    }
+    critical_actions = {
+        1: "Coordinate immediate support actions and confirm family-school communication steps.",
+        2: "Review weekly progress with school staff and adjust intensive supports as needed.",
+        3: "Check intervention follow-through and address barriers with the support team.",
+        4: "Conduct a formal review of intervention outcomes and determine next support steps.",
+    }
+
+    if overall_risk == "Low":
+        return low_risk_actions.get(week_number, low_risk_actions[4])
+    if overall_risk == "Moderate":
+        return moderate_actions.get(week_number, moderate_actions[4])
+    if overall_risk == "High":
+        return high_actions.get(week_number, high_actions[4])
+    if overall_risk == "Critical":
+        return critical_actions.get(week_number, critical_actions[4])
+    return moderate_actions.get(week_number, moderate_actions[4])
+
+
+def _select_week_actions(
+    actions: list[str],
+    overall_risk: str,
+    valid_source_labels: set[str],
+    seen_monitoring_actions: set[str],
+    seen_actions: set[str],
+    week_number: int,
+) -> list[str]:
+    """Select risk-appropriate, non-repetitive actions for one week."""
+    max_actions = 1 if overall_risk == "Low" else 2
+    selected: list[str] = []
+    monitoring_candidates: list[str] = []
+
+    for action in actions:
+        action = action.strip()
+        if not action:
+            continue
+
+        if overall_risk == "Low" and not _is_low_risk_action_allowed(
+            action,
+            valid_source_labels,
+        ):
+            continue
+
+        normalized = re.sub(r"\s+", " ", action.lower())
+        if normalized in seen_actions:
+            continue
+
+        is_monitoring = _is_monitoring_action(action)
+        if is_monitoring:
+            if normalized in seen_monitoring_actions:
+                continue
+            monitoring_candidates.append(action)
+            continue
+
+        selected.append(action)
+        seen_actions.add(normalized)
+        if len(selected) >= max_actions:
+            break
+
+    if len(selected) < max_actions:
+        for action in monitoring_candidates:
+            selected.append(action)
+            normalized = re.sub(r"\s+", " ", action.lower())
+            seen_actions.add(normalized)
+            seen_monitoring_actions.add(normalized)
+            if len(selected) >= max_actions:
+                break
+
+    if not selected:
+        fallback = _fallback_action(overall_risk, week_number)
+        selected.append(fallback)
+        seen_actions.add(re.sub(r"\s+", " ", fallback.lower()))
+        if _is_monitoring_action(fallback):
+            seen_monitoring_actions.add(re.sub(r"\s+", " ", fallback.lower()))
+
+    return selected[:max_actions]
+
+
 def clean_action_plan_output(
     generated_text: str,
     student_name: str,
     source_names: list[str],
+    overall_risk: str,
 ) -> str:
     """Return only the UI-ready action-plan sections.
 
@@ -529,6 +715,13 @@ def clean_action_plan_output(
     exact_title = "# Action Plan"
     lines = generated_text.splitlines()
     sections: dict[str, list[str]] = {heading: [] for heading in allowed_headings[1:]}
+    valid_sources = {
+        _normalize_source_label(source): source
+        for source in source_names
+        if _normalize_source_label(source)
+    }
+    valid_source_labels = set(valid_sources)
+    source_validation_failures = 0
 
     current_heading: str | None = None
     for raw_line in lines:
@@ -563,28 +756,63 @@ def clean_action_plan_output(
                 sections[current_heading].append(bullet_text)
 
     output_lines = [exact_title]
-    for heading in ["## Week 1", "## Week 2", "## Week 3", "## Week 4"]:
+    seen_monitoring_actions: set[str] = set()
+    seen_actions: set[str] = set()
+    empty_weeks: list[str] = []
+    for week_number, heading in enumerate(
+        ["## Week 1", "## Week 2", "## Week 3", "## Week 4"],
+        start=1,
+    ):
+        selected_actions = _select_week_actions(
+            sections[heading],
+            overall_risk,
+            valid_source_labels,
+            seen_monitoring_actions,
+            seen_actions,
+            week_number,
+        )
+        if not sections[heading]:
+            empty_weeks.append(heading.replace("## ", ""))
         output_lines.extend(["", heading, ""])
-        output_lines.extend(f"* {item}" for item in sections[heading][:2])
+        output_lines.extend(f"* {item}" for item in selected_actions)
 
     generated_sources = sections["## Sources Used"] or sections["## Sources"]
     if generated_sources:
-        linked_sources = []
+        sources = []
         for generated_source in generated_sources:
-            matched_source = next(
-                (
-                    source
-                    for source in source_names
-                    if generated_source.lower()
-                    in re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", source).lower()
-                ),
-                generated_source,
-            )
-            linked_sources.append(matched_source)
-        sources = linked_sources
+            normalized_source = _normalize_source_label(generated_source)
+            matched_source = valid_sources.get(normalized_source)
+            if matched_source:
+                sources.append(matched_source)
+            else:
+                source_validation_failures += 1
     else:
         sources = source_names
+
+    if not sources and overall_risk == "Low":
+        sources = [valid_sources.get("continue monitoring", "Continue Monitoring")]
+    elif not sources:
+        sources = source_names
+
+    deduped_sources = []
+    seen_sources = set()
+    for source in sources:
+        normalized_source = _normalize_source_label(source)
+        if normalized_source and normalized_source not in seen_sources:
+            deduped_sources.append(source)
+            seen_sources.add(normalized_source)
+    sources = deduped_sources
+
     output_lines.extend(["", "## Sources Used", ""])
     output_lines.extend(f"* {source}" for source in sources[:5])
+
+    logging.getLogger(__name__).info(
+        "Action plan cleanup metrics: weeks_present=%s empty_weeks=%s "
+        "source_count=%s source_validation_failures=%s",
+        4 - len(empty_weeks),
+        empty_weeks,
+        len(sources),
+        source_validation_failures,
+    )
 
     return "\n".join(output_lines).strip()
