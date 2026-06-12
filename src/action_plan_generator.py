@@ -211,6 +211,7 @@ Moderate Risk:
 High Risk:
 - Structured intervention plan.
 - Multiple coordinated actions.
+- Use concrete routines, named staff actions, and measurable weekly targets.
 - Up to 2 actions per week.
 
 Critical Risk:
@@ -218,6 +219,7 @@ Critical Risk:
 - Immediate support actions.
 - Family-school coordination.
 - Weekly progress reviews.
+- Use concrete routines, named staff actions, and measurable weekly targets.
 - Up to 2 actions per week.
 
 ACTION RULES
@@ -242,6 +244,15 @@ Actions must:
 - Every action must include at least one concrete detail such as who will act,
   what routine will be used, what goal will be set, or how progress will be
   checked.
+- For High and Critical Risk students, include measurable targets when
+  appropriate, such as assignment completion percentage, on-time attendance,
+  tardiness reduction, daily participation, or weekly behavior goals.
+- For High and Critical Risk students, name how the retrieved intervention will
+  be implemented, such as a phone call, weekly tutoring routine, lunch support
+  block, targeted skill practice, participation role, or weekly data review.
+- Prefer specific teacher-facing actions over broad phrases like "monitor
+  engagement", "adjust supports", "review progress", or "schedule a family
+  check-in".
 
 Do NOT:
 - Invent diagnoses.
@@ -306,6 +317,11 @@ OUTPUT RULES
   support routine.
 - For after-school or active learning strategies, include a concrete
   participation or engagement activity.
+- For monitoring, name the exact indicator to track, how often it will be
+  checked, and what response the teacher will take.
+- For goals, use practical school targets when possible, such as "complete 80%
+  of assignments", "attend all classes on time this week", "participate in one
+  classroom activity per day", or "reduce classroom disruptions this week".
 - Keep actions concise.
 - Focus only on execution and implementation.
 - The plan should feel like a weekly roadmap for teachers.
@@ -324,7 +340,28 @@ Weak:
 
 Better:
 * Assign a mentor or tutor to review missing assignments weekly and practice
-  one priority skill before the next progress check."""
+  one priority skill before the next progress check.
+
+Weak:
+* Monitor engagement.
+
+Better:
+* Track participation in class discussions and assignment completion each day,
+  then document any improvement or decline during the Friday progress check.
+
+Weak:
+* Adjust supports.
+
+Better:
+* Use the Friday progress data to decide whether to continue the tutoring
+  routine, add one lunch support block, or revise the homework goal.
+
+Weak:
+* Schedule a family check-in.
+
+Better:
+* Conduct a 10-15 minute family phone call and agree on one attendance or
+  homework goal for the following week."""
 
 
 def _clean_action_item(text: str) -> str:
