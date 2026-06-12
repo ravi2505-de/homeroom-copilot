@@ -522,6 +522,76 @@ def _normalize_source_label(source: str) -> str:
     return re.sub(r"\s+", " ", label).strip().lower()
 
 
+def _minimum_source_count(overall_risk: str) -> int:
+    """Return the minimum number of evidence sources to show by risk level."""
+    if overall_risk == "Critical":
+        return 3
+    if overall_risk == "High":
+        return 2
+    return 1
+
+
+def _infer_sources_from_actions(
+    actions: list[str],
+    valid_sources: dict[str, str],
+) -> list[str]:
+    """Infer valid evidence sources referenced by action wording."""
+    action_text = " ".join(actions).lower()
+    inferred: list[str] = []
+
+    source_cues = {
+        "family engagement": (
+            "family",
+            "parent",
+            "guardian",
+            "home and school",
+            "home-school",
+        ),
+        "mentoring/tutoring": (
+            "mentor",
+            "tutor",
+            "tutoring",
+            "priority skill",
+            "academic skill",
+            "missing assignment",
+        ),
+        "after-school opportunities": (
+            "after-school",
+            "after school",
+            "lunch support",
+            "support block",
+            "structured support",
+        ),
+        "individualized instruction": (
+            "individualized",
+            "skill gap",
+            "targeted practice",
+            "clear success criteria",
+            "adjust instruction",
+        ),
+        "active learning": (
+            "collaborative",
+            "problem-solving",
+            "participation role",
+            "classroom activity",
+            "learning activities",
+        ),
+        "continue monitoring": (
+            "monitor",
+            "positive feedback",
+            "positive reinforcement",
+            "review current indicators",
+        ),
+    }
+
+    for source_label, cues in source_cues.items():
+        matched_source = valid_sources.get(source_label)
+        if matched_source and any(cue in action_text for cue in cues):
+            inferred.append(matched_source)
+
+    return inferred
+
+
 def _is_monitoring_action(action: str) -> bool:
     """Return True when an action is primarily monitoring-oriented."""
     normalized = action.lower()
@@ -759,6 +829,7 @@ def clean_action_plan_output(
     seen_monitoring_actions: set[str] = set()
     seen_actions: set[str] = set()
     empty_weeks: list[str] = []
+    selected_actions_by_week: list[str] = []
     for week_number, heading in enumerate(
         ["## Week 1", "## Week 2", "## Week 3", "## Week 4"],
         start=1,
@@ -773,6 +844,7 @@ def clean_action_plan_output(
         )
         if not sections[heading]:
             empty_weeks.append(heading.replace("## ", ""))
+        selected_actions_by_week.extend(selected_actions)
         output_lines.extend(["", heading, ""])
         output_lines.extend(f"* {item}" for item in selected_actions)
 
@@ -789,6 +861,12 @@ def clean_action_plan_output(
     else:
         sources = source_names
 
+    inferred_sources = _infer_sources_from_actions(
+        selected_actions_by_week,
+        valid_sources,
+    )
+    sources.extend(inferred_sources)
+
     if not sources and overall_risk == "Low":
         sources = [valid_sources.get("continue monitoring", "Continue Monitoring")]
     elif not sources:
@@ -802,6 +880,16 @@ def clean_action_plan_output(
             deduped_sources.append(source)
             seen_sources.add(normalized_source)
     sources = deduped_sources
+
+    minimum_source_count = _minimum_source_count(overall_risk)
+    if len(sources) < minimum_source_count and overall_risk in {"High", "Critical"}:
+        for source in source_names:
+            normalized_source = _normalize_source_label(source)
+            if normalized_source and normalized_source not in seen_sources:
+                sources.append(source)
+                seen_sources.add(normalized_source)
+            if len(sources) >= minimum_source_count:
+                break
 
     output_lines.extend(["", "## Sources Used", ""])
     output_lines.extend(f"* {source}" for source in sources[:5])
