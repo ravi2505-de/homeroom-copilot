@@ -59,6 +59,28 @@ Homeroom Copilot includes features aligned with the following Build Small Hackat
 
 ---
 
+### Additional llama.cpp Implementation (Llama Champion Badge)
+
+As part of the Build Small Hackathon, I also developed and evaluated an experimental llama.cpp-powered version of Homeroom Copilot using:
+
+* Qwen2.5-1.5B-Instruct-GGUF
+* llama-cpp-python
+* GGUF quantization
+* GPU acceleration on T4 Small
+* Full layer offloading with llama.cpp
+
+This experimental implementation was deployed separately from the official submission to explore low-latency, local-first inference and efficient deployment strategies for education-focused AI applications.
+
+**Experimental llama.cpp Demo:**
+
+[https://huggingface.co/spaces/ravi2505/homeroom-copiolt-llama](https://huggingface.co/spaces/ravi2505/homeroom-copiolt-llama)
+
+The official hackathon submission remains deployed in the Build Small organization Space, while the llama.cpp version is maintained as a dedicated experimental deployment demonstrating GGUF-based inference, GPU offloading, and llama.cpp integration.
+
+This additional implementation was created for the **Llama Champion** track and to evaluate the tradeoffs between standard Transformers inference and llama.cpp-based deployment for educational AI workflows.
+
+---
+
 ## 📚 Problem
 
 Teachers often manage large classrooms while monitoring attendance, academic performance, engagement, homework completion, and behavioral indicators.
